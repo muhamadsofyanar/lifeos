@@ -125,6 +125,18 @@ def validate_shapes(data):
 
     for pref in data['preferences']:
         pid = pref['id']
+        if pid == 'academy-learning-v1':
+            lessons={'structure','clarify','smart','sgs','kpi','okr','inbox','execution','review'}
+            results=pref.get('results')
+            if not isinstance(results,dict) or not set(results).issubset(lessons):
+                raise ValueError('Struktur catatan latihan LifeOS tidak valid.')
+            for record in results.values():
+                if not isinstance(record,dict) or type(record.get('answer')) is not int or not 0<=record['answer']<=2 or not isinstance(record.get('evidence'),str) or not record['evidence'].strip() or not valid_date(record.get('savedDate')):
+                    raise ValueError('Jawaban, catatan, atau tanggal latihan tidak valid.')
+        if pid == 'academy-smart-draft-v1':
+            draft=pref.get('draft')
+            if not isinstance(draft,dict) or any(not isinstance(value,str) for value in draft.values()) or type(pref.get('step')) is not int or not 0<=pref['step']<=4:
+                raise ValueError('Struktur draft perumusan SMART tidak valid.')
         if pid == 'pomodoro':
             if 'enabled' in pref and type(pref['enabled']) is not bool:
                 raise ValueError('Status Pomodoro harus boolean.')

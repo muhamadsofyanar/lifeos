@@ -1,6 +1,6 @@
-# LifeOS v1.6
+# LifeOS v1.7
 
-**Sudah deploy versi sebelumnya? Ikuti `UPDATE-v1.6.md`. Pertahankan volume `/data` yang sekarang.**
+**Sudah deploy versi sebelumnya? Ikuti `UPDATE-v1.7.md`. Pertahankan volume `/data` yang sekarang.**
 
 Versi 1.6 menambahkan impor gabung dan template seluruh jenis data. Versi 1.5 memperbaiki validasi backup, keamanan atribut HTML, tanggal selesai tugas, pemulihan metadata audio, riwayat/koreksi sesi hafalan, penilaian sambungan dua halaman, dan definisi pengukuran Goal. Seluruh fitur v1.4 tetap tersedia. Lihat `LAPORAN-PERBAIKAN-v1.5.md` dan `CHANGELOG.md`.
 
@@ -113,6 +113,7 @@ node tests/test_recording_frontend.cjs
 node tests/test_consolidated.cjs
 node tests/test_repairs.cjs
 node tests/test_transfer_ui.cjs
+node tests/test_academy.cjs
 ```
 
 Integration test memeriksa autentikasi, CSRF, penyimpanan/readback, konflik revisi, penolakan timer ganda, history, restore state dan logout. Docker image dan deployment Coolify perlu diverifikasi di server tujuan.
@@ -152,3 +153,13 @@ Format paket impor memakai `kind: lifeos-import` dan `version: "1.0"` (teks). Re
 Paket pribadi hanya berisi rencana: 6 Area, 14 Goal, 14 Project, 42 Task berstatus todo, dan 15 Note. Tidak ada transaksi keuangan, jadwal, deadline, estimasi durasi, setoran hafalan, sesi, atau hasil aktual yang dikarang. Angka tujuan yang belum jelas tetap berupa uraian rancangan.
 
 Contoh generik berlabel FIKTIF dapat berisi riwayat untuk menjelaskan bentuk kolom. Ubah berdasarkan kejadian nyata sebelum digunakan. JSON tidak memuat file audio; gunakan ZIP audio/unggahan perekam. Today, Analytics, dan pencarian merupakan tampilan dari data yang diimpor.
+
+## Belajar LifeOS v1.7
+
+Menu Belajar LifeOS menyajikan sembilan materi singkat: struktur data, klarifikasi tujuan, SMART, SGS, KPI, OKR, pemrosesan Inbox, pemilihan pekerjaan, dan review. Setiap materi memuat contoh adaptasi, latihan, pemeriksaan pemahaman dan rujukan. Catatan latihan bukan sertifikasi penguasaan atau skor produktivitas.
+
+Klinik Goal SMART memiliki lima langkah dan pratinjau. Bahan yang belum diketahui tetap menjadi draft. Lengkapnya isian tidak membuktikan kelayakan target; semua perumusan memerlukan tinjauan pengguna. Dari detail Goal, tombol Pelajari & perjelas dengan SMART membuka Goal yang dipilih, kemudian hanya memperbaruinya setelah konfirmasi penerapan.
+
+Materi dapat dijadikan kartu Belajar & Praktik untuk dikembangkan melalui Edit, diberi tanggal review, dan dicoba dalam pekerjaan nyata. Membuat kartu tidak membuat Task atau riwayat praktik secara otomatis. Tautan artikel membuka sumber asli; aplikasi tidak mengambil seluruh artikel atau menjalankan AI.
+
+Materi dan alur aplikasi merupakan adaptasi tertulis yang dirujuk pada SUMBER-PEMBELAJARAN.md. SMART memakai varian Achievable/Relevant dari CDC; tidak diklaim sebagai metode eksklusif Darmawan Aji. Aplikasi menggunakan pemetaan Goal/indikator untuk memperkenalkan OKR, belum merupakan sistem OKR tim lengkap.

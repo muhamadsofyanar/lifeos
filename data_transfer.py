@@ -110,6 +110,9 @@ def merge_import(current,package,selected=None):
     for kind,item,raw in additions:
         for field,target in RELATIONS.get(kind,{}).items():
             if isinstance(raw.get(field),str):item[field]=maps[target].get(raw[field],raw[field])
+        if kind=='preferences' and item['id']=='academy-smart-draft-v1':
+            draft=item.get('draft',{});goal_id=draft.get('goalId')
+            if goal_id:draft['goalId']=maps['goals'].get(goal_id,goal_id)
         if kind=='metricLogs' and item.get('indicator'):
             item['indicator']=indicator_maps.get((raw.get('goal'),raw['indicator']),raw['indicator'])
     indexes={kind:{i['id'] for i in items} for kind,items in result.items()}
@@ -120,6 +123,8 @@ def merge_import(current,package,selected=None):
             if kind=='plans' and field=='source' and item.get('applied'):continue
             if reference and (not isinstance(reference,str) or reference not in indexes[target]):
                 raise ValueError(f'{kind}.{field}: referensi {reference!r} tidak ditemukan. Sertakan data terkait atau pilih ID yang sudah ada.')
+        if kind=='preferences' and item['id']=='academy-smart-draft-v1' and item.get('draft',{}).get('goalId') and item['draft']['goalId'] not in indexes['goals']:
+            raise ValueError('preferences.draft.goalId: Goal pada draft SMART tidak ditemukan. Sertakan Goal terkait.')
         if kind=='metricLogs' and item.get('indicator'):
             goal=next((g for g in result['goals'] if g['id']==item.get('goal')),None)
             if goal is None or item['indicator'] not in {i['id'] for i in goal.get('indicators',[])}:

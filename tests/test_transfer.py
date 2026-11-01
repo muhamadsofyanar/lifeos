@@ -98,6 +98,15 @@ class TransferTest(unittest.TestCase):
         self.assertEqual(merged,current)
         self.assertEqual(report['skipped'],1)
 
+    def test_smart_draft_goal_reference_follows_merge(self):
+        current=empty();current['goals']=[{'id':'old-g','title':'Goal'}]
+        source=package({'goals':[{'id':'new-g','title':'Goal'}],
+                        'preferences':[{'id':'academy-smart-draft-v1','draft':{'goalId':'new-g','outcome':'Goal'},'step':0}]})
+        merged,_=merge_import(current,source)
+        self.assertEqual(merged['preferences'][0]['draft']['goalId'],'old-g')
+        with self.assertRaisesRegex(ValueError,'goalId'):
+            merge_import(empty(),package({'preferences':source['data']['preferences']}))
+
     def test_nested_indicator_remaps_to_existing_definition(self):
         current=empty();current['goals']=[{'id':'g0','title':'Goal','indicators':[{'id':'i0','title':'Response','unit':'hours'}]}]
         source=package({'goals':[{'id':'g1','title':'Goal','indicators':[{'id':'i1','title':'Response','unit':'hours'}]}],

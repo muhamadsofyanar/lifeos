@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.7.0 — belajar sambil menerapkan (1 November 2026)
+- Menu Belajar LifeOS dengan 9 materi, sumber, contoh adaptasi dan latihan yang dapat disimpan.
+- Klinik Goal SMART lima langkah: draft, pemeriksaan bahan, pratinjau dan penerapan eksplisit ke Goal baru/yang dipilih.
+- Kelengkapan isian dibedakan dari bukti kelayakan; informasi yang belum diketahui tetap ditandai.
+- Kartu belajar dari materi dapat dibuat satu kali, dikembangkan dan diberi jadwal review oleh pengguna.
+- Bantuan kontekstual pada Tasks, Areas & Goals, Panduan serta detail Goal.
+- Catatan latihan/draft memakai preferences; tidak menambah Task atau menciptakan hasil aktual secara otomatis.
+- Validasi struktur catatan belajar serta pemetaan referensi Goal pada draft saat impor gabung.
+
 ## 1.6.0 — impor gabung & template (1 November 2026)
 - Impor JSON dengan pemilihan jenis data, pratinjau dan penyimpanan atomik menggunakan pemeriksaan revisi.
 - Data lama dipertahankan; pencocokan ID/nama/kunci memetakan kembali relasi antar-data.

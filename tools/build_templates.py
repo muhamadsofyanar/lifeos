@@ -39,7 +39,7 @@ example['routineLogs']=[{'id':'demo-routine:2000-01-01','routine':'demo-routine'
 example['timeEntries']=[{'id':'demo-time','title':'CONTOH FIKTIF — Waktu latihan','date':day,'minutes':15,'category':'Belajar','task':'demo-task','area':'demo-area','note':'CONTOH FIKTIF — bukan waktu nyata'}]
 fields={
 'inbox':('id title','body'), 'areas':('id title','body'),
-'goals':('id title','body area due metric unit baseline target period source measurementVersion indicators'),
+'goals':('id title','body area due metric unit baseline target period source measurementVersion indicators smartReview'),
 'projects':('id title','body area goal'),
 'tasks':('id title status','project result priority estimate due repeat parent learning'),
 'notes':('id title','body project folder tags'),
@@ -49,11 +49,11 @@ fields={
 'quran':('id surah ayah status','teacher date note'),
 'quranSessions':('id minutes date surah from to status','mode teacher note created'),
 'plans':('id idea step','source minutes capacity area applied outcome why due metric unit baseline target period measurementSource process frequency steps estimates reviewDate'),
-'preferences':('id','enabled short long rounds minutes newMinutes time'),
+'preferences':('id','enabled short long rounds minutes newMinutes time results draft step'),
 'quranUnits':('id juz status','teacher date note'),
 'quranUnitSessions':('id sessionVersion juz units minutes date load status connection','teacher note created'),
 'quranChecks':('id juz date','kind score0 score1 score2 score3 score4 decision assessor note nextReview'),
-'learning':('id title exercise','source insight evidence area project nextReview'),
+'learning':('id title exercise','source insight evidence area project nextReview academyLessonId'),
 'practiceLogs':('id learning date action result','lesson nextReview'),
 'dayPlans':('id date','work rest contemplation quran fixed buffer'),
 'metricLogs':('id goal date value','indicator note created'),
@@ -64,6 +64,7 @@ deps={'goals':['areas'],'projects':['areas','goals'],'tasks':['projects'],'notes
 guide={'format':{'kind':'lifeos-import','version':'1.0','data':'Objek berisi satu atau beberapa array jenis data.'},
        'rules':['ID harus unik dalam setiap jenis data dan stabil untuk impor ulang.','Tanggal memakai YYYY-MM-DD; jam HH:MM.','Tidak ada data lama yang ditimpa. ID atau judul/kunci yang cocok akan dilewati.','Judul Goal dicocokkan dalam Area yang sama; judul Project dalam Area dan Goal yang sama; Task/Note dalam Project yang sama.','Relasi memakai ID, bukan nama. Sertakan dependensi yang belum ada di aplikasi.','Sesi Focus yang diimpor harus selesai; impor tidak memulai timer.','Angka baseline, target, jadwal, dan riwayat harus diisi berdasarkan data pengguna.'],
        'collections':{k:{'label':label,'required_for_template':fields[k][0].split(),'optional':fields[k][1].split(),'dependencies':deps.get(k,[]),'example':example[k][0]} for k,label in zip(KINDS,LABELS)},
+       'learning_support':{'lessons':'Belajar LifeOS berisi materi dalam kode aplikasi. Catatan latihan tersimpan di preferences academy-learning-v1, results per ID materi.','smart_draft':'preferences academy-smart-draft-v1 memakai draft objek string dan step 0–4. draft.goalId mengacu ke Goal yang perlu ikut tersedia.','cards':'Kartu dari materi disimpan pada learning dengan academyLessonId; tanggal review tetap ditentukan pengguna.','smart_review':'goals.smartReview menyimpan status draft/review-ready, required=true, scope, capacity dan why. Status ini bukan sertifikasi SMART.'},
        'derived_features':{'Today':'Dihitung dari tugas, bigDate, agenda, rutinitas dan catatan hari. Pilih prioritas melalui bintang setelah impor.','Analytics':'Dihitung dari data aktivitas dan hasil; tidak memiliki baris impor tersendiri.','Cari Semua':'Mencari entitas yang diimpor; tidak membutuhkan file tersendiri.','Panduan':'Konten bantuan aplikasi; tidak memiliki data impor pengguna.'},
        'audio':{'route':'Settings → impor ZIP audio atau unggah melalui perekam','manifest':{'version':1,'kind':'lifeos-recordings','recordings':[]},'note':'File audio tidak dapat dimasukkan ke JSON ini. ZIP memuat recordings.json dan file audio yang sebenarnya. Untuk arsip berisi audio, gunakan format hasil ekspor aplikasi.'}}
 write('catalog.json',{'guide':guide,'example':pack('CONTOH FIKTIF — Seluruh jenis data',example,'example')})

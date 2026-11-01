@@ -80,3 +80,15 @@ class StateValidationTest(unittest.TestCase):
         for key in ['unit', 'baseline', 'target', 'period', 'source']:
             with self.subTest(key=key), self.assertRaises(ValueError):
                 self.server.validate(self.state('goals', {**item, key: ''}))
+
+    def test_academy_preferences_validate_nested_shapes(self):
+        valid={'id':'academy-learning-v1','results':{'smart':{'answer':1,'evidence':'Cakupan dan sumber perlu diperiksa.','savedDate':'2026-11-01'}}}
+        self.server.validate(self.state('preferences',valid))
+        self.server.validate(self.state('preferences',{'id':'academy-smart-draft-v1','draft':{'outcome':'Draft tujuan','goalId':''},'step':2}))
+        for pref in [{'id':'academy-learning-v1','results':None},
+                     {'id':'academy-learning-v1','results':{'unknown':{}}},
+                     {'id':'academy-smart-draft-v1','draft':[],'step':0},
+                     {'id':'academy-smart-draft-v1','draft':{'outcome':42},'step':0},
+                     {'id':'academy-smart-draft-v1','draft':{},'step':5}]:
+            with self.subTest(pref=pref),self.assertRaises(ValueError):
+                self.server.validate(self.state('preferences',pref))
