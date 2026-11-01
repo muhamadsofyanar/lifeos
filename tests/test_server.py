@@ -40,6 +40,42 @@ class AppTest(unittest.TestCase):
         self.assertEqual(self.request('history')[1]['history'][0]['revision'],0)
         d['sessions']=[];d['tasks']=[]
         self.assertEqual(self.request('state',{'revision':1,'data':d})[0],200)
+        # Old v1 backup is accepted and new collections are filled without dropping legacy tasks.
+        legacy={k:d[k] for k in ['inbox','tasks','projects','notes','events','sessions','reviews','areas','goals']}
+        legacy['tasks']=[{'id':'old-backup','title':'Legacy restored task','status':'todo'}]
+        self.assertEqual(self.request('state',{'revision':2,'data':legacy})[0],200)
+        restored=self.request('state')[1]['data']
+        self.assertEqual(restored['tasks'][0]['id'],'old-backup')
+        self.assertEqual(restored['quran'],[])
+        restored['quran']=[{'id':'101:1','surah':101,'ayah':1,'status':'teacher'}]
+        self.assertEqual(self.request('state',{'revision':3,'data':restored})[0],400)
+        restored['quran'][0]['teacher']='Penyimak'
+        restored['quranSessions']=[{'id':'q1','minutes':25,'date':'2026-11-01'}]
+        self.assertEqual(self.request('state',{'revision':3,'data':restored})[0],200)
+        self.assertEqual(self.request('state')[1]['data']['quran'][0]['teacher'],'Penyimak')
+        restored['quran'][0]['ayah']=12
+        self.assertEqual(self.request('state',{'revision':4,'data':restored})[0],400)
         self.assertEqual(self.request('logout',{})[0],200)
         self.assertEqual(self.request('state')[0],401)
 if __name__=='__main__':unittest.main()
+
+class MigrationTest(unittest.TestCase):
+    def test_existing_database_migrates_without_losing_tasks(self):
+        import sqlite3
+        root=Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as directory:
+            db=sqlite3.connect(Path(directory)/'lifeos.db')
+            legacy={k:[] for k in ['inbox','tasks','projects','notes','events','sessions','reviews','areas','goals']}
+            legacy['tasks']=[{'id':'existing','title':'Data sebelum update','status':'todo'}]
+            db.execute('CREATE TABLE state (id INTEGER PRIMARY KEY, revision INTEGER, body TEXT)')
+            db.execute('INSERT INTO state VALUES(1,7,?)',(json.dumps(legacy),));db.commit();db.close()
+            env={**os.environ,'DATA_DIR':directory,'LIFEOS_PASSWORD':'integration-password-123'}
+            for _ in range(2):
+                subprocess.run(['python3','-c','import server'],cwd=root,env=env,check=True)
+            db=sqlite3.connect(Path(directory)/'lifeos.db');rev,body=db.execute('SELECT revision,body FROM state').fetchone()
+            migrated=json.loads(body)
+            self.assertEqual(rev,8,'Migration runs exactly once')
+            self.assertEqual(migrated['tasks'],legacy['tasks'])
+            for k in ['quran','quranSessions','plans','preferences']:self.assertEqual(migrated[k],[])
+            self.assertEqual(json.loads(db.execute('SELECT body FROM history WHERE revision=7').fetchone()[0]),legacy)
+            db.close()

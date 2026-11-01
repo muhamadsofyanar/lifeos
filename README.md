@@ -1,4 +1,8 @@
-# LifeOS
+# LifeOS v1.1
+
+**Sudah deploy versi sebelumnya? Ikuti `UPDATE-v1.1.md`. Pertahankan volume `/data` yang sekarang.**
+
+Versi ini menambahkan Sullamul Hifz rubu awal Juz 30 dan Idea Planner enam langkah tanpa API AI. Lihat `CHANGELOG.md`.
 
 Aplikasi produktivitas pribadi single-user dalam bahasa Indonesia. Siap dijalankan sebagai satu container Docker di Coolify. Tidak memerlukan layanan eksternal, CDN, API berbayar, atau instalasi package saat startup.
 
@@ -15,7 +19,7 @@ Aplikasi produktivitas pribadi single-user dalam bahasa Indonesia. Siap dijalank
 - Timer fokus berdasarkan timestamp, satu sesi aktif, durasi aktual dapat dikoreksi, energi opsional, catatan gangguan. Timer tetap dihitung saat browser tutup; alarm tidak berjalan di browser tertutup. Setelah target habis, sesi menunggu pengguna menghentikan dan mengoreksi durasi.
 - Review harian, pekanan, bulanan dengan pertanyaan refleksi.
 - Analytics total waktu, estimasi vs aktual per tugas; area dan goals dasar.
-- Backup/restore JSON seluruh data, export CSV tugas, 30 snapshot riwayat di server.
+- Backup/restore JSON v2 seluruh data (restore v1 tetap didukung), export CSV tugas, 30 snapshot riwayat di server.
 - UI responsive, manifest instalasi web app. Semua data aplikasi disimpan di SQLite server, bukan hanya localStorage.
 
 ## Upload GitHub manual
@@ -83,9 +87,10 @@ docker run --rm -p 8000:8000 -e LIFEOS_PASSWORD='password-lokal-unik-minimal-12'
 - Online-first. Tidak ada service worker/offline editing/sinkronisasi antrean. Jika jaringan gagal, perubahan dibatalkan dan pesan error ditampilkan. Tidak ada refresh lintas perangkat otomatis; muat ulang untuk mengambil data terbaru. Konflik revisi ditolak, bukan digabung otomatis.
 - Search hanya teks pada halaman terkait. Tidak ada pencarian global lanjutan atau graph view.
 - Kalender berupa agenda daftar, belum kalender grid atau deteksi bentrok. Blok waktu harus mulai dan selesai di hari yang sama.
-- Pengulangan membuat tugas berikutnya setelah tugas selesai. Jika status dibuka kembali dan diselesaikan lagi, tugas berulang bisa terduplikasi. Subtasks adalah relasi parent sederhana, tanpa roll-up otomatis.
+- Pengulangan membuat satu tugas berikutnya setelah tugas selesai dan menyimpan referensinya untuk mencegah duplikasi saat dibuka-tutup. Subtasks adalah relasi parent sederhana, tanpa roll-up otomatis.
 - Waktu aktual dihitung dari sesi fokus yang dihentikan; belum ada editor waktu manual terpisah atau laporan waktu seluruh aktivitas.
 - Markdown subset, tanpa HTML mentah, upload attachment atau renderer Markdown penuh. Link menggunakan judul sehingga rename membutuhkan pembaruan link manual.
+- Modul Sullamul Hifz baru mencakup rubu Al-Qari’ah–An-Nas, bukan semua jilid atau seluruh 30 juz. Belum ada penyimpanan audio. Idea Planner menggunakan template dan jawaban pengguna, bukan AI.
 - Belum tersedia: milestone khusus, custom dashboard, habit tracking, template builder, automations, AI, analisis keselarasan area/waktu, serta sinkronisasi kalender eksternal.
 - Keamanan dasar tersedia, tetapi belum ada audit keamanan independen. Database di disk tidak terenkripsi oleh aplikasi; gunakan enkripsi/backup server sesuai kebutuhan.
 
@@ -96,6 +101,8 @@ Lihat `ROADMAP.md` untuk sisa cakupan PRD. Versi ini adalah fondasi operasional,
 ```bash
 python3 -m unittest discover -s tests -v
 node --check static/app.js
+node --check static/features.js
+node tests/test_frontend.cjs
 ```
 
 Integration test memeriksa autentikasi, CSRF, penyimpanan/readback, konflik revisi, penolakan timer ganda, history, restore state dan logout. Docker image dan deployment Coolify perlu diverifikasi di server tujuan.

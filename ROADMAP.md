@@ -1,5 +1,15 @@
 # Roadmap menuju PRD penuh
 
+## Selesai pada v1.1
+Mutabaah rubu Al-Qari’ah–An-Nas, rutinitas 20–30 menit, log sesi, status mandiri/guru, serta Idea Planner enam langkah dengan draft dan penerapan rencana.
+
+## Prioritas berdasarkan pemakaian berikutnya
+1. Tinjau pengalaman hafalan dan planner setelah satu pekan penggunaan.
+2. Penyimpanan rekaman dan pemutaran audio bila diperlukan.
+3. Murajaah terjadwal dan perluasan tahap Sullamul Hifz setelah verifikasi materi dan kesiapan pengguna.
+4. Perbaiki UX, autosave aman dan kalender sesuai kendala nyata.
+
+
 Tujuan: personal LifeOS yang menghubungkan thought → knowledge → plan → task → time → action → review.
 
 ## Fondasi tersedia

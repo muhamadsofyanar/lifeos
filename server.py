@@ -14,7 +14,14 @@ SALT = secrets.token_bytes(16)
 PASSWORD_HASH = hashlib.scrypt(PASSWORD.encode(), salt=SALT, n=16384, r=8, p=1)
 SESSIONS, ATTEMPTS = {}, []
 LOCK = threading.Lock()
-KINDS = ['inbox', 'tasks', 'projects', 'notes', 'events', 'sessions', 'reviews', 'areas', 'goals']
+LEGACY_KINDS = ['inbox', 'tasks', 'projects', 'notes', 'events', 'sessions', 'reviews', 'areas', 'goals']
+
+KINDS = LEGACY_KINDS + ['quran', 'quranSessions', 'plans', 'preferences']
+
+def normalize(data):
+    if isinstance(data, dict) and set(LEGACY_KINDS).issubset(data) and set(data).issubset(KINDS):
+        return {k: data.get(k, []) for k in KINDS}
+    return data
 
 def connect():
     db = sqlite3.connect(DATA / 'lifeos.db', timeout=20)
@@ -25,6 +32,14 @@ with connect() as db:
     db.execute('CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY CHECK(id=1), revision INTEGER NOT NULL, body TEXT NOT NULL)')
     db.execute('CREATE TABLE IF NOT EXISTS history (revision INTEGER PRIMARY KEY, created TEXT DEFAULT CURRENT_TIMESTAMP, body TEXT NOT NULL)')
     db.execute('INSERT OR IGNORE INTO state VALUES(1,0,?)', (json.dumps({k: [] for k in KINDS}),))
+
+    rev, body = db.execute('SELECT revision,body FROM state WHERE id=1').fetchone()
+    migrated = normalize(json.loads(body))
+    if migrated != json.loads(body):
+        validate_keys = set(migrated) == set(KINDS)
+        if not validate_keys: raise RuntimeError('Schema data tidak dikenali; hentikan migrasi.')
+        db.execute('INSERT OR IGNORE INTO history(revision,body) VALUES(?,?)', (rev,body))
+        db.execute('UPDATE state SET revision=?,body=? WHERE id=1', (rev+1,json.dumps(migrated)))
 
 def validate(data):
     if not isinstance(data, dict) or set(data) != set(KINDS):
@@ -37,6 +52,19 @@ def validate(data):
             if not isinstance(item, dict) or not isinstance(item.get('id'), str) or item['id'] in ids:
                 raise ValueError('ID data tidak valid atau duplikat.')
             ids.add(item['id'])
+    for item in data['quran']:
+        if item.get('surah') not in range(101,115) or not isinstance(item.get('ayah'), int):
+            raise ValueError('Bagian hafalan di luar rubu aktif.')
+        counts = [11,8,3,9,5,4,7,3,6,3,5,4,5,6]
+        if not 1 <= item['ayah'] <= counts[item['surah']-101] or item.get('status') not in ['practiced','strengthen','self','teacher']:
+            raise ValueError('Ayat atau status hafalan tidak valid.')
+        if item['id'] != str(item['surah'])+':'+str(item['ayah']):
+            raise ValueError('ID ayat tidak sesuai.')
+        if item.get('status') == 'teacher' and not str(item.get('teacher','')).strip():
+            raise ValueError('Status disimak guru memerlukan nama penyimak.')
+    for item in data['quranSessions']:
+        if not isinstance(item.get('minutes'), (int,float)) or not 0 < item['minutes'] <= 240:
+            raise ValueError('Durasi hafalan harus 1–240 menit.')
     active = [s for s in data['sessions'] if not s.get('end')]
     if len(active) > 1:
         raise ValueError('Hanya satu timer boleh aktif.')
@@ -85,7 +113,7 @@ class Handler(BaseHTTPRequestHandler):
                 with connect() as db: rows = db.execute('SELECT revision,created FROM history ORDER BY revision DESC LIMIT 30').fetchall()
                 return self.reply(200, {'history': [{'revision': r, 'created': d} for r,d in rows]})
             return self.reply(404, {'error': 'Tidak ditemukan.'})
-        files = {'/': ('index.html', 'text/html; charset=utf-8'), '/app.js': ('app.js', 'text/javascript; charset=utf-8'), '/style.css': ('style.css', 'text/css; charset=utf-8'), '/manifest.json': ('manifest.json', 'application/manifest+json'), '/icon.svg': ('icon.svg', 'image/svg+xml')}
+        files = {'/': ('index.html', 'text/html; charset=utf-8'), '/features.js': ('features.js', 'text/javascript; charset=utf-8'), '/app.js': ('app.js', 'text/javascript; charset=utf-8'), '/style.css': ('style.css', 'text/css; charset=utf-8'), '/manifest.json': ('manifest.json', 'application/manifest+json'), '/icon.svg': ('icon.svg', 'image/svg+xml')}
         if path not in files: return self.reply(404, {'error': 'Tidak ditemukan.'})
         filename, mime = files[path]
         content = (ROOT / 'static' / filename).read_bytes()
@@ -125,6 +153,7 @@ class Handler(BaseHTTPRequestHandler):
                 with LOCK: SESSIONS.pop(token, None)
                 return self.reply(200, {'ok':True}, 'lifeos=; Path=/; Max-Age=0; HttpOnly; SameSite=Strict')
             if path == '/api/state':
+                obj['data'] = normalize(obj.get('data'))
                 validate(obj.get('data'))
                 with connect() as db:
                     db.execute('BEGIN IMMEDIATE')
