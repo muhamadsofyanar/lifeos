@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.4.0 — paket konsolidasi
+- Beberapa indikator per Goal dengan satuan dan log aktual terpisah.
+- Rutinitas Process Goal dan murajaah, hari pilihan, catatan done/skip tanpa utang otomatis.
+- Bantuan isi planner untuk kolom kosong berdasarkan konteks kata kunci, tetap dapat diedit dan tanpa AI.
+- Ringkasan review tujuh hari dan draft review dari data aktual; tanggal selesai tugas baru dicatat.
+- Catatan waktu manual, kalender pekanan dan peringatan bentrok event.
+- Daily Notes dan pencarian teks lintas entitas.
+- Jeda Pomodoro pendek/panjang dengan hitungan ronde, dapat diatur/dinonaktifkan.
+- Draft browser editor/form fitur, pemulihan sadar saat revisi berbeda, tanpa password/file audio.
+- Backup JSON v4 dan migrasi koleksi tambahan, mempertahankan audio v1.3.
+- ROADMAP disatukan dan paket/panduan update kumulatif.
+
+
 ## 1.3.0
 - Rekam mikrofon dengan negosiasi format, pratinjau, putar, unggah file, loop, download dan hapus audio.
 - File audio persisten dan privat di /data/recordings, byte-range playback, indeks terpisah, validasi/kuota, deduplikasi.

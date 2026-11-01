@@ -1,7 +1,7 @@
 const assert=require('node:assert/strict');const fs=require('node:fs');const vm=require('node:vm');
 const nodes=new Map();function node(sel){if(!nodes.has(sel))nodes.set(sel,{innerHTML:'',open:false,showModal(){this.open=true},close(){this.open=false},textContent:'',classList:{add(){},remove(){}}});return nodes.get(sel)}
 const ctx=vm.createContext({console,structuredClone,crypto:require('node:crypto').webcrypto,Date,setInterval(){},setTimeout(){},document:{querySelector:node,addEventListener(){}},confirm:()=>true,FormData:class{},fetch:()=>{throw Error('Unexpected network')},URL,Blob});
-vm.runInContext(fs.readFileSync('static/app.js','utf8')+'\n'+fs.readFileSync('static/features.js','utf8')+'\n'+fs.readFileSync('static/hifz.js','utf8')+'\n'+fs.readFileSync('static/wellbeing.js','utf8')+'\n'+fs.readFileSync('static/recordings.js','utf8'),ctx);
+vm.runInContext(fs.readFileSync('static/app.js','utf8')+'\n'+fs.readFileSync('static/features.js','utf8')+'\n'+fs.readFileSync('static/hifz.js','utf8')+'\n'+fs.readFileSync('static/wellbeing.js','utf8')+'\n'+fs.readFileSync('static/recordings.js','utf8')+'\n'+fs.readFileSync('static/consolidated.js','utf8'),ctx);
 vm.runInContext(`
 data=normalizeClient(Object.fromEntries(['inbox','tasks','projects','notes','events','sessions','reviews','areas','goals','quran','quranSessions','plans','preferences'].map(k=>[k,[]])));
 `,ctx);

@@ -26,7 +26,7 @@ class AppTest(unittest.TestCase):
                 return r.status,json.load(r)
         except urllib.error.HTTPError as e:return e.code,json.load(e)
     def test_workflow(self):
-        for filename in ['app.js','features.js','hifz.js','wellbeing.js','recordings.js','quran-meta.json']:
+        for filename in ['app.js','features.js','hifz.js','wellbeing.js','recordings.js','quran-meta.json','consolidated.js']:
             with urllib.request.urlopen(f'http://127.0.0.1:{self.port}/{filename}') as asset:
                 self.assertEqual(asset.status,200)
                 self.assertGreater(len(asset.read()),100)
@@ -59,6 +59,12 @@ class AppTest(unittest.TestCase):
         self.assertEqual(self.request('state')[1]['data']['quran'][0]['teacher'],'Penyimak')
         restored['quran'][0]['ayah']=12
         self.assertEqual(self.request('state',{'revision':4,'data':restored})[0],400)
+        restored=self.request('state')[1]['data']
+        restored['routines']=[{'id':'r1','title':'Follow-up','days':[1,3,5],'minutes':20,'start':'2026-11-01'}]
+        restored['routineLogs']=[{'id':'r1:2026-11-02','routine':'r1','date':'2026-11-02','status':'done'}]
+        restored['timeEntries']=[{'id':'time1','title':'Koordinasi','minutes':30,'date':'2026-11-01'}]
+        self.assertEqual(self.request('state',{'revision':4,'data':restored})[0],200)
+        self.assertEqual(self.request('state')[1]['data']['routineLogs'][0]['status'],'done')
         self.assertEqual(self.request('logout',{})[0],200)
         self.assertEqual(self.request('state')[0],401)
 if __name__=='__main__':unittest.main()

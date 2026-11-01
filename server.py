@@ -17,7 +17,7 @@ SESSIONS, ATTEMPTS = {}, []
 LOCK = threading.Lock()
 LEGACY_KINDS = ['inbox', 'tasks', 'projects', 'notes', 'events', 'sessions', 'reviews', 'areas', 'goals']
 
-KINDS = LEGACY_KINDS + ['quran', 'quranSessions', 'plans', 'preferences', 'quranUnits', 'quranUnitSessions', 'quranChecks', 'learning', 'practiceLogs', 'dayPlans', 'metricLogs']
+KINDS = LEGACY_KINDS + ['quran', 'quranSessions', 'plans', 'preferences', 'quranUnits', 'quranUnitSessions', 'quranChecks', 'learning', 'practiceLogs', 'dayPlans', 'metricLogs', 'routines', 'routineLogs', 'timeEntries']
 
 def normalize(data):
     if isinstance(data, dict) and set(LEGACY_KINDS).issubset(data) and set(data).issubset(KINDS):
@@ -68,6 +68,8 @@ def validate(data):
             raise ValueError('Durasi hafalan harus 1–240 menit.')
     from hifz import validate_units
     validate_units(data)
+    from workflow import validate_workflow
+    validate_workflow(data)
     active = [s for s in data['sessions'] if not s.get('end')]
     if len(active) > 1:
         raise ValueError('Hanya satu timer boleh aktif.')
@@ -119,7 +121,7 @@ class Handler(MediaMixin, BaseHTTPRequestHandler):
                 with connect() as db: rows = db.execute('SELECT revision,created FROM history ORDER BY revision DESC LIMIT 30').fetchall()
                 return self.reply(200, {'history': [{'revision': r, 'created': d} for r,d in rows]})
             return self.reply(404, {'error': 'Tidak ditemukan.'})
-        files = {'/': ('index.html', 'text/html; charset=utf-8'), '/recordings.js': ('recordings.js', 'text/javascript; charset=utf-8'), '/quran-meta.json': ('quran-meta.json', 'application/json; charset=utf-8'), '/wellbeing.js': ('wellbeing.js', 'text/javascript; charset=utf-8'), '/hifz.js': ('hifz.js', 'text/javascript; charset=utf-8'), '/features.js': ('features.js', 'text/javascript; charset=utf-8'), '/app.js': ('app.js', 'text/javascript; charset=utf-8'), '/style.css': ('style.css', 'text/css; charset=utf-8'), '/manifest.json': ('manifest.json', 'application/manifest+json'), '/icon.svg': ('icon.svg', 'image/svg+xml')}
+        files = {'/': ('index.html', 'text/html; charset=utf-8'), '/consolidated.js': ('consolidated.js', 'text/javascript; charset=utf-8'), '/recordings.js': ('recordings.js', 'text/javascript; charset=utf-8'), '/quran-meta.json': ('quran-meta.json', 'application/json; charset=utf-8'), '/wellbeing.js': ('wellbeing.js', 'text/javascript; charset=utf-8'), '/hifz.js': ('hifz.js', 'text/javascript; charset=utf-8'), '/features.js': ('features.js', 'text/javascript; charset=utf-8'), '/app.js': ('app.js', 'text/javascript; charset=utf-8'), '/style.css': ('style.css', 'text/css; charset=utf-8'), '/manifest.json': ('manifest.json', 'application/manifest+json'), '/icon.svg': ('icon.svg', 'image/svg+xml')}
         if path not in files: return self.reply(404, {'error': 'Tidak ditemukan.'})
         filename, mime = files[path]
         content = (ROOT / 'static' / filename).read_bytes()

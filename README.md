@@ -1,10 +1,14 @@
-# LifeOS v1.3
+# LifeOS v1.4
 
-**Sudah deploy versi sebelumnya? Ikuti `UPDATE-v1.3.md`. Pertahankan volume `/data` yang sekarang.**
+**Sudah deploy versi sebelumnya? Ikuti `UPDATE-v1.4.md`. Pertahankan volume `/data` yang sekarang.**
 
 Versi ini menambahkan perekaman mikrofon, pratinjau/putar, penyimpanan audio persisten, backup/impor ZIP audio, nama surah/ayat untuk 100 unit Juz 29 dan acuan cakupan surah/ayat seluruh halaman. Fitur panduan alur, ritme, Belajar & Praktik, indikator Goal dan peta 30 juz tetap tersedia. Idea Planner tetap berbasis pertanyaan/template tanpa API AI. Lihat `CHANGELOG.md`.
 
 Aplikasi produktivitas pribadi single-user dalam bahasa Indonesia. Siap dijalankan sebagai satu container Docker di Coolify. Tidak memerlukan layanan eksternal, CDN, API berbayar, atau instalasi package saat startup.
+
+## Tambahan paket gabungan v1.4
+
+Rutinitas Process Goal, bantuan isi planner berbasis kata kunci, review dari data aktual, anggaran dan kalender pekanan, waktu manual, Daily Notes, pencarian lintas data, jeda Pomodoro, jadwal murajaah dan perlindungan draft perangkat. Baca MULAI-DI-SINI.md.
 
 ## Yang sudah bekerja
 
@@ -15,11 +19,11 @@ Aplikasi produktivitas pribadi single-user dalam bahasa Indonesia. Siap dijalank
 - Eisenhower sederhana dengan empat kategori prioritas manual (bukan dua sumbu independen).
 - Projects: deskripsi, area, goal, progres berdasarkan jumlah tugas selesai dibagi seluruh tugas proyek, bobot sama termasuk subtasks.
 - Notes: editor teks dengan subset tampilan Markdown (heading, bold), folder, tags, internal links `[[Judul]]`, backlinks, ekspor Markdown.
-- Agenda/time blocking sederhana dalam bentuk daftar tanggal dan jam, relasi tugas opsional.
+- Agenda/time blocking dengan tampilan pekanan dan daftar, relasi tugas, serta peringatan bentrok pada editor.
 - Timer fokus berdasarkan timestamp, satu sesi aktif, durasi aktual dapat dikoreksi, energi opsional, catatan gangguan. Timer tetap dihitung saat browser tutup; alarm tidak berjalan di browser tertutup. Setelah target habis, sesi menunggu pengguna menghentikan dan mengoreksi durasi.
 - Review harian, pekanan, bulanan dengan pertanyaan refleksi.
 - Analytics total waktu, estimasi vs aktual per tugas; area dan goals dasar.
-- Backup/restore JSON v3 seluruh data (restore v1/v2 tetap didukung), export CSV tugas, 30 snapshot riwayat di server.
+- Backup/restore JSON v4 seluruh data (restore v1/v2/v3 tetap didukung), export CSV tugas, 30 snapshot riwayat di server.
 - UI responsive, manifest instalasi web app. Semua data aplikasi disimpan di SQLite server, bukan hanya localStorage.
 
 ## Upload GitHub manual
@@ -83,12 +87,12 @@ docker run --rm -p 8000:8000 -e LIFEOS_PASSWORD='password-lokal-unik-minimal-12'
 - Python standard library HTTP server di belakang reverse proxy HTTPS Coolify; SQLite WAL; frontend HTML/CSS/JavaScript tanpa build.
 - Satu pengguna, satu container/replica. Tidak ada multi-user, horizontal scaling, registrasi publik, atau integrasi email.
 - Penyimpanan berupa state JSON berversi di SQLite dan tabel snapshot, bukan schema relasional PostgreSQL final dalam visi PRD. Ini menyederhanakan deployment pribadi; migrasi diperlukan jika diperluas ke kolaborasi atau volume data besar.
-- Semua edit disimpan saat menekan Simpan, bukan autosave per ketikan. Jangan tutup dialog sebelum menyimpan.
+- Data server disimpan saat menekan Simpan. Editor/form fitur memiliki draft lokal browser; ini bukan autosave server atau offline sync. Planner tetap menyimpan draft pada Lanjut/Kembali/Simpan draft.
 - Online-first. Tidak ada service worker/offline editing/sinkronisasi antrean. Jika jaringan gagal, perubahan dibatalkan dan pesan error ditampilkan. Tidak ada refresh lintas perangkat otomatis; muat ulang untuk mengambil data terbaru. Konflik revisi ditolak, bukan digabung otomatis.
-- Search hanya teks pada halaman terkait. Tidak ada pencarian global lanjutan atau graph view.
-- Kalender berupa agenda daftar, belum kalender grid atau deteksi bentrok. Blok waktu harus mulai dan selesai di hari yang sama.
+- Pencarian teks tersedia per halaman dan lintas entitas. Belum semantic search/advanced query atau graph view.
+- Kalender berupa tampilan pekanan dan daftar; bentrok event diperingatkan saat menyimpan. Belum drag/drop atau deteksi konflik seluruh rutinitas. Blok waktu harus mulai dan selesai di hari yang sama.
 - Pengulangan membuat satu tugas berikutnya setelah tugas selesai dan menyimpan referensinya untuk mencegah duplikasi saat dibuka-tutup. Subtasks adalah relasi parent sederhana, tanpa roll-up otomatis.
-- Waktu aktual dihitung dari sesi fokus yang dihentikan; belum ada editor waktu manual terpisah atau laporan waktu seluruh aktivitas.
+- Waktu aktual tersedia dari sesi fokus dan catatan manual terpisah. Hindari duplikasi. Belum audit otomatis seluruh aktivitas.
 - Markdown subset, tanpa HTML mentah, upload attachment atau renderer Markdown penuh. Link menggunakan judul sehingga rename membutuhkan pembaruan link manual.
 - Sullamul Hifz memetakan 30 juz dengan unit ayat/baris/halaman sesuai tahap. Lihat SOURCES-AND-DESIGN.md untuk dasar dan batas adaptasi. Tidak ada teks ayat. Audio kini disimpan terpisah pada `/data/recordings`, memerlukan backup ZIP audio selain JSON. Idea Planner menggunakan template dan jawaban pengguna, bukan AI.
 - Belum tersedia: milestone khusus, custom dashboard, habit tracking, template builder, automations, AI, analisis keselarasan area/waktu, serta sinkronisasi kalender eksternal.
@@ -106,6 +110,7 @@ node --check static/hifz.js
 node --check static/wellbeing.js
 node tests/test_frontend.cjs
 node tests/test_recording_frontend.cjs
+node tests/test_consolidated.cjs
 ```
 
 Integration test memeriksa autentikasi, CSRF, penyimpanan/readback, konflik revisi, penolakan timer ganda, history, restore state dan logout. Docker image dan deployment Coolify perlu diverifikasi di server tujuan.
@@ -120,3 +125,6 @@ Buka Panduan, lalu Today untuk ritme harian. Goal → Lihat arah & kemajuan untu
 
 ## Audio v1.3
 Lihat UPDATE-v1.3.md untuk langkah rekam/putar, batas file, kompatibilitas, dan backup. JSON saja tidak mencakup audio. HTTPS dan izin mikrofon diperlukan untuk rekaman browser. Simpan klip pendek, dengarkan, lalu beri penilaian hafalan secara terpisah.
+
+## Status dan roadmap
+ROADMAP.md adalah daftar status tunggal. Versi ZIP tidak sama dengan tahap PRD. Paket v1.4 kumulatif dan bisa langsung menggantikan versi lama tanpa deploy setiap versi antara. Jangan menimpa compose/volume/environment yang sudah dikonfigurasi.
