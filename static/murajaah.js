@@ -10,6 +10,7 @@ function mCoverage(juz,scope){
  if(kind==='juz'){if(value!==juz)throw Error('Juz cakupan tidak sesuai.');start=ja;end=jb;label='Juz '+juz+' utuh'}
  else if(kind==='page'){const p=mMeta.pages[value];if(!p)throw Error('Halaman harus 1–604.');start=mOrdinal([p[0].surah,p[0].from]);end=mOrdinal([p.at(-1).surah,p.at(-1).to])+1;label='Halaman '+value+' utuh'}
  else if(kind==='surah'){const s=chapters[value-1];if(!s)throw Error('Surah tidak valid.');start=s.start;end=start+s.count;label='Surah '+s.name+' utuh'}
+ else if(kind==='verses'){const s=chapters[value-1],a=scope.from,b=scope.to;if(!s||!Number.isInteger(a)||!Number.isInteger(b)||a<1||b<a||b>s.count)throw Error('Rentang ayat tidak sesuai surah.');start=s.start+a-1;end=s.start+b;label=value+'. '+s.name+' · ayat '+a+'–'+b}
  else if(kind==='rubu'){
   if(value<1||value>8)throw Error('Rubu harus 1–8.');
   if(juz===30){const [a,b]=mMeta.bookRubu30[value-1];start=chapters[a-1].start;end=chapters[b-1].start+chapters[b-1].count;label='Rubu '+value+' buku utuh · Juz 30'}
@@ -17,13 +18,13 @@ function mCoverage(juz,scope){
  }else throw Error('Jenis cakupan tidak dikenal.');
  if(start>=jb||end<=ja)throw Error('Cakupan berada di luar juz pilihan.');
  const segments=chapters.flatMap(s=>{const a=Math.max(start,s.start),b=Math.min(end,s.start+s.count);return a<b?[[s.number,a-s.start+1,b-s.start]]:[]});
- return {scope:{kind,value},label,start,end,segments,count:end-start,crossJuz:start<ja||end>jb};
+ return {scope:kind==='verses'?{kind,value,from:scope.from,to:scope.to}:{kind,value},label,start,end,segments,count:end-start,crossJuz:start<ja||end>jb};
 }
 function mOptions(j,kind){
  if(kind==='juz')return [[j,'Juz '+j+' utuh']];
  if(kind==='rubu')return Array.from({length:8},(_,i)=>[i+1,mCoverage(j,{kind,value:i+1}).label]);
  const values=kind==='page'?Object.keys(mMeta.pages).map(Number):mMeta.chapters.map(s=>s.number);
- return values.flatMap(value=>{try{return [[value,mCoverage(j,{kind,value}).label]]}catch{return []}});
+ return values.flatMap(value=>{try{return [[value,(kind==='surah'?value+'. ':'')+mCoverage(j,{kind,value}).label]]}catch{return []}});
 }
 function mSelected(){if(!mSelection||mSelection.juz!==hifzJuz)mSelection={juz:hifzJuz,kind:'page',value:mOptions(hifzJuz,'page')[0][0]};return mSelection}
 function mSpanLabel(c){return c.segments.map(([s,a,b])=>mMeta.chapters[s-1].name+' '+a+'–'+b).join(' · ')}
@@ -55,7 +56,7 @@ function mSessionOptions(j,c,selected=''){
 async function murajaahDialog(j,scope,logId=''){
  if(mOpening){toast('Bacaan sedang dimuat.');return}
  mOpening=true;try{
- const requestedScope={kind:scope.kind,value:scope.value},originalGeneration=rec.generation,originalBlob=rec.blob;
+ const requestedScope=structuredClone(scope),originalGeneration=rec.generation,originalBlob=rec.blob;
  if(recordingActive()||rec.saving)throw Error('Hentikan rekaman dan selesaikan penyimpanan dahulu.');
  if(rec.blob&&!confirm('Ganti audio sementara yang belum disimpan?'))return;
  await ensureMurajaahMeta();await ensureMurajaahText();

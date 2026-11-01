@@ -156,3 +156,22 @@ class MediaTest(unittest.TestCase):
         restored=[r for r in json.loads(self.request('recordings')[1])['recordings'] if r.get('targetVersion')==2]
         self.assertEqual(len(restored),4)
         self.assertEqual(sum(r.get('reviewSession')=='whole-mulk' for r in restored),2)
+
+    def test_z_custom_practice_ranges_roundtrip_and_rejection(self):
+        self.login();state=json.loads(self.request('state')[1]);d=state['data']
+        logs=[{'id':'range-lines','coverageVersion':2,'juz':29,'scope':{'kind':'lines','value':562,'from':2,'to':7},'date':'2026-11-01','minutes':20,'readingMode':'hafalan','status':'self','assessor':''},
+              {'id':'range-verses','coverageVersion':2,'juz':30,'scope':{'kind':'verses','value':107,'from':1,'to':3},'date':'2026-11-01','minutes':15,'readingMode':'hafalan','status':'self','assessor':''}]
+        d['quranChecks']=logs
+        code,body,_=self.request('state',json.dumps({'revision':state['revision'],'data':d}).encode(),{'Content-Type':'application/json'})
+        self.assertEqual(code,200,body)
+        stored=json.loads(self.request('state')[1]);self.assertEqual(stored['data']['quranChecks'],logs)
+        for bad in [{'kind':'lines','value':562,'from':1,'to':16},{'kind':'lines','value':562,'from':8,'to':2},{'kind':'lines','value':542,'from':1,'to':3}]:
+            invalid=json.loads(json.dumps(stored['data']));invalid['quranChecks'][0]['scope']=bad
+            self.assertEqual(self.request('state',json.dumps({'revision':stored['revision'],'data':invalid}).encode(),{'Content-Type':'application/json'})[0],400)
+            self.assertEqual(json.loads(self.request('state')[1])['revision'],stored['revision'])
+        # Verse ranges reuse the authenticated text/audio scope contract.
+        meta={'title':'107. Al-Maun 1-3','date':'2026-11-01','juz':30,'targetVersion':2,'scope':{'kind':'verses','value':107,'from':1,'to':3},'duration':10}
+        payload=wav()[:-2]+b'\x61\x00';headers={'Content-Type':'audio/wav','X-Recording-Metadata':urllib.parse.quote(json.dumps(meta))}
+        code,body,_=self.request('recordings',payload,headers);self.assertEqual(code,200,body)
+        rid=json.loads(body)['id'];saved=next(r for r in json.loads(self.request('recordings')[1])['recordings'] if r['id']==rid)
+        self.assertEqual(saved['scope'],meta['scope']);self.assertIn('107.',saved['target'])

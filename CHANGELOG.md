@@ -1,3 +1,12 @@
+# v1.8.1 — Rentang dan tampilan
+
+- Rentang ayat dalam semua juz dan rentang baris 1–15 untuk tahap Juz 1–29.
+- Ketuk ayat/unit atau Catat sesi membuka formulir rentang; sesi tahap dan S2 tetap tersedia.
+- Penerapan hanya ke ayat atau unit yang tercakup utuh; unit parsial tidak ditandai selesai.
+- Nomor surah pada daftar pilihan dan rujukan unit.
+- Riwayat/koreksi rentang, ringkasan waktu, pemulihan draft serta bacaan/rekaman rentang ayat.
+- Warna, kedalaman kartu dan animasi singkat yang mengikuti prefers-reduced-motion.
+
 # v1.8.0 — Murajaah utuh
 
 - Cakupan satu halaman, satu surah, satu rubu atau satu juz penuh; rentang dihitung dari metadata ayat.

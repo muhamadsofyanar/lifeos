@@ -25,6 +25,11 @@ def coverage(juz,scope):
     elif kind=='surah':
         if not 1<=value<=114:raise ValueError('Surah harus 1–114.')
         s=chapters[value-1];a=s['start'];b=a+s['count'];label=f"Surah {s['name']} utuh"
+    elif kind=='verses':
+        if not 1<=value<=114:raise ValueError('Surah harus 1–114.')
+        s=chapters[value-1];first,last=scope.get('from'),scope.get('to')
+        if type(first) is not int or type(last) is not int or not 1<=first<=last<=s['count']:raise ValueError('Rentang ayat tidak sesuai surah.')
+        a=s['start']+first-1;b=s['start']+last;label=f"{value}. {s['name']} · ayat {first}–{last}"
     elif kind=='rubu':
         if not 1<=value<=8:raise ValueError('Rubu harus 1–8.')
         if juz==30:
@@ -37,4 +42,6 @@ def coverage(juz,scope):
     for s in chapters:
         lo=max(a,s['start']);hi=min(b,s['start']+s['count'])
         if lo<hi:segments.append([s['number'],lo-s['start']+1,hi-s['start']])
-    return {'scope':{'kind':kind,'value':value},'label':label,'segments':segments,'count':b-a,'start':a,'end':b,'crossJuz':a<ja or b>jb}
+    cleaned={'kind':kind,'value':value}
+    if kind=='verses':cleaned.update({'from':first,'to':last})
+    return {'scope':cleaned,'label':label,'segments':segments,'count':b-a,'start':a,'end':b,'crossJuz':a<ja or b>jb}

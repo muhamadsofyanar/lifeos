@@ -70,3 +70,22 @@ dialog{overflow-y:auto;max-height:90dvh}
 .quran-size-28{font-size:28px}.quran-size-34{font-size:34px}.quran-size-42{font-size:42px}
 .quran-attribution{font-size:12px}
 @media(max-width:650px){#modal:has(.murajaah-recorder){width:calc(100vw - 16px);padding:16px}.murajaah-controls{top:-16px;padding:8px;gap:8px}.quran-arabic{padding:14px;font-size:28px}.quran-size-34{font-size:34px}.quran-size-42{font-size:42px}.quran-arabic h3{padding:8px}}
+/* Quiet energy: depth, clearer actions and short motion, respecting user preferences. */
+:root{--green:#245847;--lime:#e3efb8;--accent:#d3a651;--shadow:0 6px 22px #23473509}
+body{background:radial-gradient(ellipse at 95% 0%,#e7efdc 0,transparent 45%),var(--bg)}
+.panel,.task{box-shadow:var(--shadow);transition:border-color .18s ease,box-shadow .18s ease}
+.panel:hover{border-color:#c9d8bc}
+button{transition:background-color .16s ease,box-shadow .16s ease,transform .16s ease}
+button.primary{box-shadow:0 3px 10px #24584718}
+button:active:not(:disabled){transform:translateY(1px)}
+.verse:hover{box-shadow:0 3px 8px #24584722;border-color:#8ba770}
+.verse.self,.verse.teacher{box-shadow:inset 0 0 0 1px #ffffff4d}
+.stats>div:first-child{background:linear-gradient(125deg,#e4efb9,#d2e8bb);border-color:#cbdcaa}
+.range-launch{background:linear-gradient(120deg,#fff,#f0f6e8);border-left:4px solid #6e9351}
+.range-launch h2{margin-bottom:5px}.range-launch p{margin-top:0}.range-launch summary{cursor:pointer;font-weight:600;margin-top:12px}
+.range-hint{font-size:13px}
+dialog[open]{animation:dialog-arrive .18s ease-out}
+#content{animation:content-arrive .22s ease-out}
+@keyframes dialog-arrive{from{opacity:.3;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes content-arrive{from{opacity:.5;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}button:active:not(:disabled){transform:none}}
