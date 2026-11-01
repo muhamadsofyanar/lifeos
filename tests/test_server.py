@@ -26,6 +26,10 @@ class AppTest(unittest.TestCase):
                 return r.status,json.load(r)
         except urllib.error.HTTPError as e:return e.code,json.load(e)
     def test_workflow(self):
+        for filename in ['app.js','features.js','hifz.js','wellbeing.js']:
+            with urllib.request.urlopen(f'http://127.0.0.1:{self.port}/{filename}') as asset:
+                self.assertEqual(asset.status,200)
+                self.assertGreater(len(asset.read()),100)
         self.assertEqual(self.request('state')[0],401)
         self.assertEqual(self.request('login',{'password':'wrong'})[0],401)
         self.assertEqual(self.request('login',{'password':'integration-password-123'})[0],200)
@@ -79,3 +83,38 @@ class MigrationTest(unittest.TestCase):
             for k in ['quran','quranSessions','plans','preferences']:self.assertEqual(migrated[k],[])
             self.assertEqual(json.loads(db.execute('SELECT body FROM history WHERE revision=7').fetchone()[0]),legacy)
             db.close()
+
+class HifzValidationTest(unittest.TestCase):
+    def test_units_days_metrics(self):
+        import sys
+        sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+        from hifz import validate_units,unit_ids,page_range
+        base={'quranUnits':[],'quranUnitSessions':[],'dayPlans':[],'metricLogs':[]}
+        self.assertEqual(len(unit_ids(29)),100)
+        self.assertEqual(len(unit_ids(28)),60)
+        self.assertEqual(len(unit_ids(27)),40)
+        self.assertEqual(page_range(1),(1,21))
+        self.assertEqual(page_range(25),(482,501))
+        for j in range(1,30):
+            entry={**base,'quranUnits':[{'id':next(iter(unit_ids(j))),'juz':j,'status':'self'}]}
+            validate_units(entry)
+        with self.assertRaises(ValueError):validate_units({**base,'quranUnits':[{'id':'29:562:6','juz':29,'status':'self'}]})
+        with self.assertRaises(ValueError):validate_units({**base,'quranUnits':[{'id':'29:562:1','juz':29,'status':'teacher'}]})
+        with self.assertRaises(ValueError):validate_units({**base,'dayPlans':[{'id':'day','work':1000,'rest':800}]})
+        with self.assertRaises(ValueError):validate_units({**base,'metricLogs':[{'id':'m','value':float('nan')}]})
+        validate_units({**base,'quranUnitSessions':[{'id':'s','juz':1,'units':['1:2:1','1:3:1'],'minutes':25}]})
+
+    def test_v11_data_preserved(self):
+        import sqlite3
+        root=Path(__file__).resolve().parents[1]
+        old={k:[] for k in ['inbox','tasks','projects','notes','events','sessions','reviews','areas','goals','quran','quranSessions','plans','preferences']}
+        old['quran']=[{'id':'101:1','surah':101,'ayah':1,'status':'self'}]
+        old['plans']=[{'id':'draft','idea':'Keep my idea','step':2}]
+        with tempfile.TemporaryDirectory() as directory:
+            db=sqlite3.connect(Path(directory)/'lifeos.db');db.execute('CREATE TABLE state(id INTEGER PRIMARY KEY,revision INTEGER,body TEXT)');db.execute('INSERT INTO state VALUES(1,12,?)',(json.dumps(old),));db.commit();db.close()
+            for _ in range(2):subprocess.run(['python3','-c','import server'],cwd=root,env={**os.environ,'DATA_DIR':directory,'LIFEOS_PASSWORD':'integration-password-123'},check=True)
+            db=sqlite3.connect(Path(directory)/'lifeos.db');rev,body=db.execute('SELECT revision,body FROM state').fetchone();db.close();new=json.loads(body)
+            self.assertEqual(rev,13)
+            for key in old:self.assertEqual(old[key],new[key])
+            self.assertEqual(new['learning'],[])
+            self.assertEqual(new['quranUnits'],[])

@@ -1,5 +1,9 @@
 # Roadmap menuju PRD penuh
 
+## Selesai pada v1.2
+Panduan alur, anggaran ritme harian, pembelajaran dan praktik, hubungan Goal/Project/Task, log indikator, pemecahan tugas dan peta Sullamul Hifz 30 juz berdasarkan unit tahap. Belum offline-first, AI, kalender grid atau seluruh kolom buku cetak.
+
+
 ## Selesai pada v1.1
 Mutabaah rubu Al-Qari’ah–An-Nas, rutinitas 20–30 menit, log sesi, status mandiri/guru, serta Idea Planner enam langkah dengan draft dan penerapan rencana.
 

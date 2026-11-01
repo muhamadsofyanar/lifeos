@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.2.0
+- Panduan alur aplikasi dan bantuan kontekstual per halaman.
+- Ritme Today: anggaran kerja/belajar, tidur/istirahat, kontemplasi, Al-Qur’an, kewajiban tetap dan cadangan; peringatan Big 3 melebihi kapasitas.
+- Belajar & Praktik: sumber ilmu, inti pelajaran, latihan, bukti, tugas praktik, riwayat dan tanggal review manual.
+- Detail alur Project/Goal, indikator dan log angka aktual.
+- Pecah tugas besar menjadi subtasks yang bisa dimulai.
+- Review ditambah perasaan/beban, pengurangan pekerjaan dan pemulihan. Kalender ditambah jenis waktu.
+- Sullamul Hifz seluruh 30 juz sesuai peta delapan jilid, jenis unit bertahap, delapan rubu Juz 30, evaluasi/gerbang dan tanggal murajaah.
+- Backup format v3, restore v1/v2 dan migrasi tambahan koleksi.
+- Dockerfile menyalin modul backend hifz.py.
+
+
 ## 1.1.0
 - Menu Sullamul Hifz dengan rubu Al-Qari'ah–An-Nas, 79 ayat.
 - Status ayat: dilatih, perlu penguatan, lancar mandiri, disimak guru.

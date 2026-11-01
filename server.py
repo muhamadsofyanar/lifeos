@@ -16,7 +16,7 @@ SESSIONS, ATTEMPTS = {}, []
 LOCK = threading.Lock()
 LEGACY_KINDS = ['inbox', 'tasks', 'projects', 'notes', 'events', 'sessions', 'reviews', 'areas', 'goals']
 
-KINDS = LEGACY_KINDS + ['quran', 'quranSessions', 'plans', 'preferences']
+KINDS = LEGACY_KINDS + ['quran', 'quranSessions', 'plans', 'preferences', 'quranUnits', 'quranUnitSessions', 'quranChecks', 'learning', 'practiceLogs', 'dayPlans', 'metricLogs']
 
 def normalize(data):
     if isinstance(data, dict) and set(LEGACY_KINDS).issubset(data) and set(data).issubset(KINDS):
@@ -53,10 +53,10 @@ def validate(data):
                 raise ValueError('ID data tidak valid atau duplikat.')
             ids.add(item['id'])
     for item in data['quran']:
-        if item.get('surah') not in range(101,115) or not isinstance(item.get('ayah'), int):
-            raise ValueError('Bagian hafalan di luar rubu aktif.')
-        counts = [11,8,3,9,5,4,7,3,6,3,5,4,5,6]
-        if not 1 <= item['ayah'] <= counts[item['surah']-101] or item.get('status') not in ['practiced','strengthen','self','teacher']:
+        if item.get('surah') not in range(78,115) or not isinstance(item.get('ayah'), int):
+            raise ValueError('Surah hafalan di luar Juz 30.')
+        counts = [40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6]
+        if not 1 <= item['ayah'] <= counts[item['surah']-78] or item.get('status') not in ['practiced','strengthen','self','teacher']:
             raise ValueError('Ayat atau status hafalan tidak valid.')
         if item['id'] != str(item['surah'])+':'+str(item['ayah']):
             raise ValueError('ID ayat tidak sesuai.')
@@ -65,6 +65,8 @@ def validate(data):
     for item in data['quranSessions']:
         if not isinstance(item.get('minutes'), (int,float)) or not 0 < item['minutes'] <= 240:
             raise ValueError('Durasi hafalan harus 1–240 menit.')
+    from hifz import validate_units
+    validate_units(data)
     active = [s for s in data['sessions'] if not s.get('end')]
     if len(active) > 1:
         raise ValueError('Hanya satu timer boleh aktif.')
@@ -113,7 +115,7 @@ class Handler(BaseHTTPRequestHandler):
                 with connect() as db: rows = db.execute('SELECT revision,created FROM history ORDER BY revision DESC LIMIT 30').fetchall()
                 return self.reply(200, {'history': [{'revision': r, 'created': d} for r,d in rows]})
             return self.reply(404, {'error': 'Tidak ditemukan.'})
-        files = {'/': ('index.html', 'text/html; charset=utf-8'), '/features.js': ('features.js', 'text/javascript; charset=utf-8'), '/app.js': ('app.js', 'text/javascript; charset=utf-8'), '/style.css': ('style.css', 'text/css; charset=utf-8'), '/manifest.json': ('manifest.json', 'application/manifest+json'), '/icon.svg': ('icon.svg', 'image/svg+xml')}
+        files = {'/': ('index.html', 'text/html; charset=utf-8'), '/wellbeing.js': ('wellbeing.js', 'text/javascript; charset=utf-8'), '/hifz.js': ('hifz.js', 'text/javascript; charset=utf-8'), '/features.js': ('features.js', 'text/javascript; charset=utf-8'), '/app.js': ('app.js', 'text/javascript; charset=utf-8'), '/style.css': ('style.css', 'text/css; charset=utf-8'), '/manifest.json': ('manifest.json', 'application/manifest+json'), '/icon.svg': ('icon.svg', 'image/svg+xml')}
         if path not in files: return self.reply(404, {'error': 'Tidak ditemukan.'})
         filename, mime = files[path]
         content = (ROOT / 'static' / filename).read_bytes()
