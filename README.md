@@ -1,12 +1,12 @@
-# LifeOS v1.4
+# LifeOS v1.5
 
-**Sudah deploy versi sebelumnya? Ikuti `UPDATE-v1.4.md`. Pertahankan volume `/data` yang sekarang.**
+**Sudah deploy versi sebelumnya? Ikuti `UPDATE-v1.5.md`. Pertahankan volume `/data` yang sekarang.**
 
-Versi ini menambahkan perekaman mikrofon, pratinjau/putar, penyimpanan audio persisten, backup/impor ZIP audio, nama surah/ayat untuk 100 unit Juz 29 dan acuan cakupan surah/ayat seluruh halaman. Fitur panduan alur, ritme, Belajar & Praktik, indikator Goal dan peta 30 juz tetap tersedia. Idea Planner tetap berbasis pertanyaan/template tanpa API AI. Lihat `CHANGELOG.md`.
+Versi 1.5 memperbaiki validasi backup, keamanan atribut HTML, tanggal selesai tugas, pemulihan metadata audio, riwayat/koreksi sesi hafalan, penilaian sambungan dua halaman, dan definisi pengukuran Goal. Seluruh fitur v1.4 tetap tersedia. Lihat `LAPORAN-PERBAIKAN-v1.5.md` dan `CHANGELOG.md`.
 
 Aplikasi produktivitas pribadi single-user dalam bahasa Indonesia. Siap dijalankan sebagai satu container Docker di Coolify. Tidak memerlukan layanan eksternal, CDN, API berbayar, atau instalasi package saat startup.
 
-## Tambahan paket gabungan v1.4
+## Fitur paket gabungan
 
 Rutinitas Process Goal, bantuan isi planner berbasis kata kunci, review dari data aktual, anggaran dan kalender pekanan, waktu manual, Daily Notes, pencarian lintas data, jeda Pomodoro, jadwal murajaah dan perlindungan draft perangkat. Baca MULAI-DI-SINI.md.
 
@@ -111,6 +111,7 @@ node --check static/wellbeing.js
 node tests/test_frontend.cjs
 node tests/test_recording_frontend.cjs
 node tests/test_consolidated.cjs
+node tests/test_repairs.cjs
 ```
 
 Integration test memeriksa autentikasi, CSRF, penyimpanan/readback, konflik revisi, penolakan timer ganda, history, restore state dan logout. Docker image dan deployment Coolify perlu diverifikasi di server tujuan.
@@ -128,3 +129,11 @@ Lihat UPDATE-v1.3.md untuk langkah rekam/putar, batas file, kompatibilitas, dan 
 
 ## Status dan roadmap
 ROADMAP.md adalah daftar status tunggal. Versi ZIP tidak sama dengan tahap PRD. Paket v1.4 kumulatif dan bisa langsung menggantikan versi lama tanpa deploy setiap versi antara. Jangan menimpa compose/volume/environment yang sudah dikonfigurasi.
+
+## Pengujian browser opsional
+
+`node tests/test_browser.cjs` memerlukan Playwright dan Chromium yang sudah terpasang pada lingkungan pengujian. Keduanya bukan dependensi runtime aplikasi. Pengujian browser belum berhasil dijalankan pada lingkungan penyusunan paket ini karena executable Chromium tidak tersedia dan unduhannya gagal. Jangan menganggap skrip ini sebagai bukti kelulusan uji browser.
+
+## Perilaku data v1.5
+
+Backup JSON tetap versi 4. Koleksi dan ID lama dipertahankan. Definisi pengukuran baru memakai `measurementVersion: 1`; sesi unit yang baru atau dikoreksi memakai `sessionVersion: 2`. Sesi lama tidak otomatis mendapat nilai sambungan atau tanggal penyelesaian yang belum pernah dicatat. Validasi baru menolak backup dengan tipe atau nilai yang tidak valid sebelum mengganti data.

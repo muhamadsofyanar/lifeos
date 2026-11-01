@@ -63,6 +63,7 @@ class MediaTest(unittest.TestCase):
         code,backup,_=self.request('recordings/export');self.assertEqual(code,200)
         with zipfile.ZipFile(io.BytesIO(backup)) as z:
             manifest=json.loads(z.read('recordings.json'));self.assertEqual(z.read(manifest['recordings'][0]['file']),wav())
+        original_created=manifest['recordings'][0]['created']
         # Invalid late archive entry must roll back imports and remove staged files.
         self.assertEqual(self.request('recordings/delete',json.dumps({'id':rid}).encode(),{'Content-Type':'application/json'})[0],200)
         malicious=io.BytesIO()
@@ -72,9 +73,17 @@ class MediaTest(unittest.TestCase):
         self.assertEqual(json.loads(self.request('recordings')[1])['recordings'],[])
         self.assertEqual(list((Path(self.tmp.name)/'recordings').iterdir()),[])
         code,result,_=self.request('recordings/import',backup,{'Content-Type':'application/zip'});self.assertEqual(code,200);self.assertEqual(json.loads(result)['added'],1)
+        self.assertEqual(json.loads(self.request('recordings')[1])['recordings'][0]['created'],original_created)
         self.assertEqual(json.loads(self.request('recordings/import',backup,{'Content-Type':'application/zip'})[1])['added'],0)
         # Database and audio survive server restart; session deliberately expires.
         type(self).proc.terminate();type(self).proc.wait();type(self).start();self.assertEqual(self.request('recordings')[0],401);self.login()
         rid=json.loads(self.request('recordings')[1])['recordings'][0]['id']
         self.assertEqual(self.request('recordings/'+rid)[1],wav())
         cookie=type(self).cookie;type(self).cookie='';self.assertEqual(self.request('recordings/'+rid)[0],401);type(self).cookie=cookie
+
+    def test_metadata_rejects_non_calendar_date_and_boolean_duration(self):
+        self.login()
+        for update in [{'date':'2026-02-30'},{'duration':True}]:
+            meta={'title':'Fixture','date':'2026-11-01','juz':29,'duration':1,**update}
+            headers={'Content-Type':'audio/wav','X-Recording-Metadata':urllib.parse.quote(json.dumps(meta))}
+            self.assertEqual(self.request('recordings',wav(),headers)[0],400)

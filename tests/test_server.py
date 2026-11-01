@@ -34,6 +34,12 @@ class AppTest(unittest.TestCase):
         self.assertEqual(self.request('login',{'password':'wrong'})[0],401)
         self.assertEqual(self.request('login',{'password':'integration-password-123'})[0],200)
         _,state=self.request('state');type(self).csrf=state['csrf'];d=state['data']
+        # A rejected restore must not modify either data or the revision.
+        malformed=json.loads(json.dumps(d));malformed['events']=[{'id':'broken','date':'2026-11-01','time':None}]
+        self.assertEqual(self.request('state',{'revision':0,'data':malformed})[0],400)
+        unchanged=self.request('state')[1]
+        self.assertEqual(unchanged['revision'],0)
+        self.assertEqual(unchanged['data'],d)
         d['tasks'].append({'id':'t1','title':'Write portfolio','status':'todo'})
         self.assertEqual(self.request('state',{'revision':0,'data':d},csrf=False)[0],403)
         self.assertEqual(self.request('state',{'revision':0,'data':d})[0],200)

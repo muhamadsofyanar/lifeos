@@ -2,7 +2,7 @@ FROM python:3.12-slim
 ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1 DATA_DIR=/data PORT=8000 COOKIE_SECURE=true
 WORKDIR /app
 RUN groupadd -g 10001 lifeos && useradd -u 10001 -g lifeos -M lifeos && mkdir /data && chown lifeos:lifeos /data
-COPY --chown=lifeos:lifeos server.py hifz.py media_store.py workflow.py /app/
+COPY --chown=lifeos:lifeos server.py hifz.py media_store.py workflow.py validation.py /app/
 COPY --chown=lifeos:lifeos static /app/static
 USER lifeos
 EXPOSE 8000

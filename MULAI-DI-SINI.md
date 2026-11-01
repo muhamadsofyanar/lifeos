@@ -1,6 +1,6 @@
-# LifeOS v1.4 — paket gabungan
+# LifeOS v1.5 — paket gabungan
 
-**Sudah pernah deploy? Ikuti UPDATE-v1.4.md saja.** Tidak perlu deploy versi 1.1, 1.2 atau 1.3 dahulu. Panduan update versi lama adalah catatan historis.
+**Sudah pernah deploy? Ikuti UPDATE-v1.5.md saja.** Tidak perlu deploy versi 1.1, 1.2, 1.3 atau 1.4 dahulu. Panduan update versi lama adalah catatan historis.
 
 Untuk instalasi baru, ikuti README.md. Gunakan Dockerfile dan seluruh folder static terbaru. Satu pengguna, satu container, volume `/data`, port 8000.
 

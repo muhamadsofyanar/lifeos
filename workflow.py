@@ -1,6 +1,7 @@
-import datetime,math
+import datetime,math,re
 
 def valid_date(value):
+    if not isinstance(value,str) or not re.fullmatch(r'\d{4}-\d{2}-\d{2}',value):return False
     try:datetime.date.fromisoformat(value);return True
     except (ValueError,TypeError):return False
 

@@ -24,7 +24,7 @@ for(const [j,count] of [[30,564],[29,100],[28,60],[27,40],[26,20],[1,21],[25,20]
 for(let j=1;j<=30;j++){vm.runInContext(`hifzJuz=${j};quranContent()`,ctx)}
 console.log('Frontend checks passed: 15 pages, 30 juz, 564 verses, original 79-verse rubu, progress, legacy normalization, estimates, recurrence, form button behavior.');
 (async()=>{
- vm.runInContext(`persist=async()=>{};draft={id:'plan-test',idea:'Uji pemasaran',outcome:'Pelanggan bertambah',metric:'Pertanyaan dan transaksi',process:'Tinjau dan follow-up',frequency:'Pekanan',capacity:60,minutes:25,steps:'Catat kondisi awal\\nUji penawaran',estimates:'20,25'};planStep=5;collectPlan=()=>{};`,ctx);
+ vm.runInContext(`persist=async()=>{};draft={id:'plan-test',idea:'Uji pemasaran',outcome:'Pelanggan bertambah',metric:'Waktu respons',unit:'jam',baseline:'48',target:'24',period:'per pekan',measurementSource:'Log layanan',process:'Tinjau dan follow-up',frequency:'Pekanan',capacity:60,minutes:25,steps:'Catat kondisi awal\\nUji penawaran',estimates:'20,25'};planStep=5;collectPlan=()=>{};`,ctx);
  await vm.runInContext("savePlan('apply')",ctx);
  assert.equal(vm.runInContext('data.plans[0].applied',ctx),true);
  assert.equal(vm.runInContext('data.goals.length',ctx),1);

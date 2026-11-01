@@ -36,7 +36,7 @@ vm.runInContext(`let savedForm;showForm=(title,html,save)=>{savedForm=save};`,ct
  assert.equal(vm.runInContext('summaryData(today(),today()).manual',ctx),30);
  assert.ok(vm.runInContext('summaryData(today(),today()).focus>=100',ctx));
  vm.runInContext("data.goals.push({id:'g',title:'Pelanggan'});indicatorForm('g')",ctx);
- await vm.runInContext("savedForm({title:'Pertanyaan masuk',unit:'orang per pekan',baseline:'0',target:'Tentukan setelah uji'})",ctx);
+ await vm.runInContext("savedForm({title:'Pertanyaan masuk',unit:'orang',baseline:'0',target:'Tentukan setelah uji',period:'per pekan',source:'Catatan pertanyaan'})",ctx);
  const indicatorId=vm.runInContext("data.goals.find(g=>g.id==='g').indicators[0].id",ctx);
  vm.runInContext(`indicatorRecord('g',${JSON.stringify(indicatorId)})`,ctx);
  await vm.runInContext("savedForm({date:today(),value:'3',note:'Catatan aktual'})",ctx);

@@ -37,3 +37,10 @@ Tiga website, kuliah, masjid/organisasi, target 30 juz; mulai Al-Qari'ah–An-Na
 
 ## Perjelasan lokasi dan audio v1.3
 Seratus label unit Juz 29 dicocokkan dari kolom target Jilid 2 dan dipasangkan ke halaman menggunakan titik awal ayat. Cakupan halaman lengkap berasal dari Tanzil Metadata v1.0. Atribusi dan sumber asli tersedia di THIRD-PARTY-NOTICES.md. Unit yang lebih kecil dari satu halaman tetap memakai baris sebagai batas; cakupan halaman tidak dianggap sama dengan cakupan unit. Audio direkam/disimpan tanpa penilaian otomatis.
+
+## Perbaikan adaptasi v1.5
+Performance pada formulir indikator dijelaskan sebagai standar peningkatan kinerja terhadap kondisi awal pribadi. Ukuran baru memerlukan satuan, baseline, target, periode dan sumber data. Nilai belum diketahui harus dinyatakan oleh pengguna; aplikasi tidak mengisi angka kondisi awal dari dugaan. Sumber pengukuran disimpan terpisah dari referensi Inbox planner.
+
+Untuk Safhatayn, catatan sesi S2 baru mencakup dua halaman berurutan dalam juz yang sama. Penilaian sambungan disimpan terpisah dari status setiap halaman. Pilihan N/S tetap tersedia sebagai persiapan, dan status halaman tidak otomatis membuktikan kelancaran rangkaian. Sambungan lintas juz serta penilaian setelah jeda tetap memerlukan evaluasi pengguna/penyimak; aplikasi belum menyediakan pasangan lintas juz. Sesi lama tanpa penilaian sambungan ditampilkan sebagai belum diperiksa.
+
+Pemeriksaan sumber mengonfirmasi kerangka SGS dan panduan utama delapan jilid. Seluruh 100 label rentang ayat Juz 29 dan setiap batas baris belum diverifikasi ulang satu per satu terhadap hasil pindai dalam rilis ini.

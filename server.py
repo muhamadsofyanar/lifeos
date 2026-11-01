@@ -18,6 +18,10 @@ LOCK = threading.Lock()
 LEGACY_KINDS = ['inbox', 'tasks', 'projects', 'notes', 'events', 'sessions', 'reviews', 'areas', 'goals']
 
 KINDS = LEGACY_KINDS + ['quran', 'quranSessions', 'plans', 'preferences', 'quranUnits', 'quranUnitSessions', 'quranChecks', 'learning', 'practiceLogs', 'dayPlans', 'metricLogs', 'routines', 'routineLogs', 'timeEntries']
+VERSE_COUNTS = [40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6]
+
+def counts_for_surah(surah):
+    return VERSE_COUNTS[surah - 78]
 
 def normalize(data):
     if isinstance(data, dict) and set(LEGACY_KINDS).issubset(data) and set(data).issubset(KINDS):
@@ -53,19 +57,29 @@ def validate(data):
             if not isinstance(item, dict) or not isinstance(item.get('id'), str) or item['id'] in ids:
                 raise ValueError('ID data tidak valid atau duplikat.')
             ids.add(item['id'])
+    from validation import validate_shapes
+    validate_shapes(data)
     for item in data['quran']:
-        if item.get('surah') not in range(78,115) or not isinstance(item.get('ayah'), int):
+        if type(item.get('surah')) is not int or item['surah'] not in range(78,115) or type(item.get('ayah')) is not int:
             raise ValueError('Surah hafalan di luar Juz 30.')
-        counts = [40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6]
-        if not 1 <= item['ayah'] <= counts[item['surah']-78] or item.get('status') not in ['practiced','strengthen','self','teacher']:
+        if not 1 <= item['ayah'] <= counts_for_surah(item['surah']) or item.get('status') not in ['practiced','strengthen','self','teacher']:
             raise ValueError('Ayat atau status hafalan tidak valid.')
         if item['id'] != str(item['surah'])+':'+str(item['ayah']):
             raise ValueError('ID ayat tidak sesuai.')
         if item.get('status') == 'teacher' and not str(item.get('teacher','')).strip():
             raise ValueError('Status disimak guru memerlukan nama penyimak.')
     for item in data['quranSessions']:
-        if not isinstance(item.get('minutes'), (int,float)) or not 0 < item['minutes'] <= 240:
+        from workflow import number, valid_date
+        if not number(item.get('minutes'), 1, 240):
             raise ValueError('Durasi hafalan harus 1–240 menit.')
+        if any(k in item for k in ['surah', 'from', 'to']):
+            surah, start, end = item.get('surah'), item.get('from'), item.get('to')
+            if type(surah) is not int or not 78 <= surah <= 114 or type(start) is not int or type(end) is not int or not 1 <= start <= end <= counts_for_surah(surah):
+                raise ValueError('Rentang ayat sesi tidak valid.')
+        if 'status' in item and item['status'] not in ['practiced','strengthen','self','teacher']:
+            raise ValueError('Penilaian sesi tidak valid.')
+        if item.get('status') == 'teacher' and not item.get('teacher', '').strip():
+            raise ValueError('Isi nama penyimak sesi.')
     from hifz import validate_units
     validate_units(data)
     from workflow import validate_workflow

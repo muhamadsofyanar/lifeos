@@ -2,6 +2,7 @@
 import contextlib, hashlib, json, math, os, re, secrets, shutil, sqlite3, tempfile, threading, time, zipfile
 from pathlib import Path
 from urllib.parse import unquote
+from workflow import valid_date, number
 
 MEDIA_LOCK=threading.RLock()
 MAX_FILE=50*1024*1024
@@ -31,9 +32,9 @@ def clean_metadata(meta):
     juz=meta.get('juz')
     if type(juz) is not int or not 1<=juz<=30:raise ValueError('Pilih juz rekaman.')
     if not isinstance(meta.get('title'),str) or not meta['title'].strip() or len(meta['title'])>250:raise ValueError('Judul rekaman diperlukan, maksimal 250 karakter.')
-    if not re.fullmatch(r'\d{4}-\d{2}-\d{2}',str(meta.get('date',''))):raise ValueError('Tanggal audio tidak valid.')
+    if not valid_date(meta.get('date')):raise ValueError('Tanggal audio tidak valid.')
     duration=meta.get('duration',0)
-    if not isinstance(duration,(int,float)) or not math.isfinite(duration) or not 0<=duration<=86400:raise ValueError('Durasi audio tidak valid.')
+    if not number(duration,0,86400):raise ValueError('Durasi audio tidak valid.')
     for key in ['target','note','session']:
         if not isinstance(meta.get(key,''),str) or len(meta.get(key,''))>4000:raise ValueError('Catatan audio terlalu panjang.')
     result={k:meta.get(k,'') for k in ['title','date','juz','target','note','session']};result['duration']=duration;return result
@@ -44,6 +45,7 @@ def rows(conn):
 def public(row):return {**json.loads(row['metadata']),'id':row['id'],'mime':row['mime'],'size':row['size'],'created':row['created']}
 
 def insert_audio(conn,body,meta,created=None):
+    if created is not None and not number(created,0,253402300799):raise ValueError('Waktu pembuatan audio tidak valid.')
     mime,ext=detect_audio(body)
     if not 16<=len(body)<=MAX_FILE:raise ValueError('Audio harus berukuran 16 byte–50 MB.')
     sha=hashlib.sha256(body).hexdigest()
@@ -53,7 +55,7 @@ def insert_audio(conn,body,meta,created=None):
     if total[0]+len(body)>MAX_TOTAL or total[1]>=2000:raise ValueError('Penyimpanan audio aplikasi penuh (512 MB / 2000 rekaman). Download backup dan hapus rekaman yang tidak diperlukan.')
     rid=secrets.token_hex(16);filename=rid+'.'+ext;path=DIRECTORY/'recordings'/filename
     path.write_bytes(body)
-    try:conn.execute('INSERT INTO recordings VALUES(?,?,?,?,?,?,?)',(rid,filename,mime,len(body),sha,json.dumps(clean_metadata(meta)),created or time.time()))
+    try:conn.execute('INSERT INTO recordings VALUES(?,?,?,?,?,?,?)',(rid,filename,mime,len(body),sha,json.dumps(clean_metadata(meta)),time.time() if created is None else created))
     except BaseException:path.unlink(missing_ok=True);raise
     return rid,True
 
@@ -181,13 +183,14 @@ class MediaMixin:
                         with db() as conn:
                             conn.execute('BEGIN IMMEDIATE')
                             for entry in entries:
+                                if not isinstance(entry,dict):raise ValueError('Entri arsip harus berupa objek.')
                                 filename=entry.get('file','')
                                 if not re.fullmatch(r'audio/[a-f0-9]{32}\.(webm|m4a|mp3|ogg|wav)',filename):raise ValueError('Nama file arsip tidak valid.')
                                 try:info=archive.getinfo(filename)
                                 except KeyError:raise ValueError('File audio dalam manifest tidak ditemukan.')
                                 if not 16<=info.file_size<=MAX_FILE:raise ValueError('Ukuran file dalam arsip tidak valid.')
                                 body=archive.read(filename)
-                                rid,is_new=insert_audio(conn,body,clean_metadata(entry.get('metadata')))
+                                rid,is_new=insert_audio(conn,body,clean_metadata(entry.get('metadata')),entry.get('created'))
                                 if is_new:
                                     row=conn.execute('SELECT filename FROM recordings WHERE id=?',(rid,)).fetchone()
                                     created_files.append(row[0]);added+=1

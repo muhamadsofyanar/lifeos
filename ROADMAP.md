@@ -1,18 +1,18 @@
 # Roadmap LifeOS — sumber status tunggal
 
-Status paket source: **v1.4.0**. Nomor paket berbeda dari tahap MVP/V2/V3/V4 pada PRD. Deployment yang benar-benar aktif harus diperiksa melalui footer aplikasi dan Coolify; source siap tidak berarti sudah terpasang.
+Status paket source: **v1.5.0**. Nomor paket berbeda dari tahap MVP/V2/V3/V4 pada PRD. Deployment yang benar-benar aktif harus diperiksa melalui footer aplikasi dan Coolify; source siap tidak berarti sudah terpasang.
 
 ## Arah produk
 
 Second brain pribadi untuk menghubungkan ide, ilmu, hasil, ukuran kemajuan, proses, tugas, waktu dan review. Mendukung bisnis, kuliah, masjid/organisasi, hafalan 30 juz dan ruang pemulihan. Tujuan penggunaan: langkah lebih jelas, tanggung jawab tertata, ada ruang kerja/ibadah/istirahat/kontemplasi. Aplikasi tidak menjamin hasil bisnis, keahlian atau kebahagiaan dari jumlah centang.
 
-## Tersedia pada v1.4
+## Tersedia pada v1.5
 
 | Kelompok | Cakupan | Batas |
 |---|---|---|
 | Fondasi MVP | Today, Inbox, Notes, Tasks, Project, Big 3, Kanban/WIP, timer dan review | Belum offline/autosave server |
 | Penyusunan goal | Planner enam langkah, contoh dan bantuan isi berdasarkan kata kunci | Bukan AI; jawaban wajib ditinjau |
-| Goal | Indikator utama dan tambahan, satuan, kondisi awal, target dan log aktual | Belum agregasi/analisis otomatis |
+| Goal | Indikator utama dan tambahan, satuan, kondisi awal, target, periode, sumber data dan log aktual | Belum agregasi/analisis otomatis |
 | Proses | Rutinitas hari pilihan, hubungan Goal, catatan done/skip, jeda rutinitas | Bukan notifikasi/habit analytics lengkap |
 | Waktu | Anggaran ritme, kalender pekanan, peringatan bentrok event, waktu manual | Belum drag/drop/smart scheduling/audit otomatis seluruh hari |
 | Fokus | Sesi aktual dan jeda singkat/panjang berdasarkan ronde | Jeda dimulai setelah sesi disimpan, alarm tidak aktif di browser tertutup |

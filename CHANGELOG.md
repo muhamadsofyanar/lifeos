@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.5.0 — perbaikan data dan alur hafalan (1 November 2026)
+- Validasi tipe data, tanggal/jam, rentang ayat, preferensi, indikator dan sesi sebelum penyimpanan/restore.
+- ID pada option HTML di-escape; kegagalan render saat memuat data menampilkan jalur backup/pemulihan.
+- Tanggal selesai tugas konsisten pada editor, tombol penyelesaian dan Inbox; salinan pengulangan tidak mewarisi tanggal selesai.
+- Impor audio mempertahankan timestamp pembuatan asli dan memvalidasi tanggal kalender/durasi.
+- Riwayat sesi lebih ringkas, tanpa pemisah/catatan kosong, penilaian saat sesi terlabel dan 20 sesi per halaman.
+- Koreksi sesi ayat/unit lengkap dengan pilihan eksplisit memperbarui mutabaah; hapus catatan tidak menghapus mutabaah/audio.
+- S2 mencakup dua halaman berurutan dengan penilaian sambungan terpisah; penyimak wajib untuk status guru.
+- Definisi indikator baru wajib berisi satuan, baseline, target, periode dan sumber data; sumber ukur dipisahkan dari referensi Inbox planner.
+- Format tanggal lokal eksplisit YYYY-MM-DD; keterangan backup audio dan daftar fitur Settings diperbarui.
+- Tambahan regresi Python/JavaScript serta skrip uji browser opsional.
+
 ## 1.4.0 — paket konsolidasi
 - Beberapa indikator per Goal dengan satuan dan log aktual terpisah.
 - Rutinitas Process Goal dan murajaah, hari pilihan, catatan done/skip tanpa utang otomatis.
