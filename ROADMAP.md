@@ -1,5 +1,9 @@
 # Roadmap menuju PRD penuh
 
+## Selesai pada v1.3
+Rekam/putar audio pribadi, unggah, penyimpanan persisten, backup/impor ZIP audio dan perjelasan referensi halaman. Batas ayat per unit Juz 29 dari sumber mutabaah sudah tersedia; unit kecil juz lain masih perlu pencocokan lebih lanjut.
+
+
 ## Selesai pada v1.2
 Panduan alur, anggaran ritme harian, pembelajaran dan praktik, hubungan Goal/Project/Task, log indikator, pemecahan tugas dan peta Sullamul Hifz 30 juz berdasarkan unit tahap. Belum offline-first, AI, kalender grid atau seluruh kolom buku cetak.
 

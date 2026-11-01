@@ -1,8 +1,8 @@
-# LifeOS v1.2
+# LifeOS v1.3
 
-**Sudah deploy versi sebelumnya? Ikuti `UPDATE-v1.2.md`. Pertahankan volume `/data` yang sekarang.**
+**Sudah deploy versi sebelumnya? Ikuti `UPDATE-v1.3.md`. Pertahankan volume `/data` yang sekarang.**
 
-Versi ini menambahkan panduan alur, ritme harian, Belajar & Praktik, indikator Goal, pemecahan tugas, dan Sullamul Hifz dengan peta seluruh 30 juz. Idea Planner tetap berbasis pertanyaan/template tanpa API AI. Lihat `CHANGELOG.md`.
+Versi ini menambahkan perekaman mikrofon, pratinjau/putar, penyimpanan audio persisten, backup/impor ZIP audio, nama surah/ayat untuk 100 unit Juz 29 dan acuan cakupan surah/ayat seluruh halaman. Fitur panduan alur, ritme, Belajar & Praktik, indikator Goal dan peta 30 juz tetap tersedia. Idea Planner tetap berbasis pertanyaan/template tanpa API AI. Lihat `CHANGELOG.md`.
 
 Aplikasi produktivitas pribadi single-user dalam bahasa Indonesia. Siap dijalankan sebagai satu container Docker di Coolify. Tidak memerlukan layanan eksternal, CDN, API berbayar, atau instalasi package saat startup.
 
@@ -90,7 +90,7 @@ docker run --rm -p 8000:8000 -e LIFEOS_PASSWORD='password-lokal-unik-minimal-12'
 - Pengulangan membuat satu tugas berikutnya setelah tugas selesai dan menyimpan referensinya untuk mencegah duplikasi saat dibuka-tutup. Subtasks adalah relasi parent sederhana, tanpa roll-up otomatis.
 - Waktu aktual dihitung dari sesi fokus yang dihentikan; belum ada editor waktu manual terpisah atau laporan waktu seluruh aktivitas.
 - Markdown subset, tanpa HTML mentah, upload attachment atau renderer Markdown penuh. Link menggunakan judul sehingga rename membutuhkan pembaruan link manual.
-- Sullamul Hifz memetakan 30 juz dengan unit ayat/baris/halaman sesuai tahap. Lihat SOURCES-AND-DESIGN.md untuk dasar dan batas adaptasi. Tidak ada teks ayat atau penyimpanan audio. Idea Planner menggunakan template dan jawaban pengguna, bukan AI.
+- Sullamul Hifz memetakan 30 juz dengan unit ayat/baris/halaman sesuai tahap. Lihat SOURCES-AND-DESIGN.md untuk dasar dan batas adaptasi. Tidak ada teks ayat. Audio kini disimpan terpisah pada `/data/recordings`, memerlukan backup ZIP audio selain JSON. Idea Planner menggunakan template dan jawaban pengguna, bukan AI.
 - Belum tersedia: milestone khusus, custom dashboard, habit tracking, template builder, automations, AI, analisis keselarasan area/waktu, serta sinkronisasi kalender eksternal.
 - Keamanan dasar tersedia, tetapi belum ada audit keamanan independen. Database di disk tidak terenkripsi oleh aplikasi; gunakan enkripsi/backup server sesuai kebutuhan.
 
@@ -105,6 +105,7 @@ node --check static/features.js
 node --check static/hifz.js
 node --check static/wellbeing.js
 node tests/test_frontend.cjs
+node tests/test_recording_frontend.cjs
 ```
 
 Integration test memeriksa autentikasi, CSRF, penyimpanan/readback, konflik revisi, penolakan timer ganda, history, restore state dan logout. Docker image dan deployment Coolify perlu diverifikasi di server tujuan.
@@ -116,3 +117,6 @@ Integration test memeriksa autentikasi, CSRF, penyimpanan/readback, konflik revi
 
 ## Penggunaan v1.2
 Buka Panduan, lalu Today untuk ritme harian. Goal → Lihat arah & kemajuan untuk indikator. Project → Buka alur proyek untuk hubungan data. Belajar & Praktik untuk mengubah ilmu menjadi tindakan dan pengulangan. Sullamul Hifz untuk seluruh peta tahap 30 juz. Tidak ada pengisian data kehidupan otomatis atau perubahan data lama tanpa tindakan pengguna.
+
+## Audio v1.3
+Lihat UPDATE-v1.3.md untuk langkah rekam/putar, batas file, kompatibilitas, dan backup. JSON saja tidak mencakup audio. HTTPS dan izin mikrofon diperlukan untuk rekaman browser. Simpan klip pendek, dengarkan, lalu beri penilaian hafalan secara terpisah.

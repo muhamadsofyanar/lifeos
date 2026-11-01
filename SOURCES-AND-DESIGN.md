@@ -34,3 +34,6 @@ Prinsip tambahan berasal dari artikel darmawanaji.com yang telah dibahas: Collec
 ## Preferensi pengguna
 
 Tiga website, kuliah, masjid/organisasi, target 30 juz; mulai Al-Qari'ah–An-Nas; sesi 20–30 menit; latihan per ayat; evaluasi dengan rekaman; kebutuhan istirahat, kontemplasi dan pikiran yang lebih tertata. Data pribadi akun/source tidak dimasukkan ke ZIP.
+
+## Perjelasan lokasi dan audio v1.3
+Seratus label unit Juz 29 dicocokkan dari kolom target Jilid 2 dan dipasangkan ke halaman menggunakan titik awal ayat. Cakupan halaman lengkap berasal dari Tanzil Metadata v1.0. Atribusi dan sumber asli tersedia di THIRD-PARTY-NOTICES.md. Unit yang lebih kecil dari satu halaman tetap memakai baris sebagai batas; cakupan halaman tidak dianggap sama dengan cakupan unit. Audio direkam/disimpan tanpa penilaian otomatis.

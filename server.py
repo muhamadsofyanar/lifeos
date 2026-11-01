@@ -4,6 +4,7 @@ from pathlib import Path
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from http.cookies import SimpleCookie
 from urllib.parse import urlsplit
+from media_store import MediaMixin, setup as setup_media
 
 ROOT = Path(__file__).parent
 DATA = Path(os.environ.get('DATA_DIR', str(ROOT / 'data')))
@@ -71,7 +72,9 @@ def validate(data):
     if len(active) > 1:
         raise ValueError('Hanya satu timer boleh aktif.')
 
-class Handler(BaseHTTPRequestHandler):
+setup_media(DATA)
+
+class Handler(MediaMixin, BaseHTTPRequestHandler):
     def log_message(self, fmt, *args):
         pass
 
@@ -90,7 +93,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('X-Content-Type-Options', 'nosniff')
         self.send_header('X-Frame-Options', 'DENY')
         self.send_header('Referrer-Policy', 'same-origin')
-        self.send_header('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'")
+        self.send_header('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; media-src 'self' blob:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'")
 
     def session(self):
         try:
@@ -104,6 +107,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = urlsplit(self.path).path
+        if self.media_get(path): return
         if path == '/api/health': return self.reply(200, {'ok': True})
         if path.startswith('/api/'):
             _, session = self.session()
@@ -115,7 +119,7 @@ class Handler(BaseHTTPRequestHandler):
                 with connect() as db: rows = db.execute('SELECT revision,created FROM history ORDER BY revision DESC LIMIT 30').fetchall()
                 return self.reply(200, {'history': [{'revision': r, 'created': d} for r,d in rows]})
             return self.reply(404, {'error': 'Tidak ditemukan.'})
-        files = {'/': ('index.html', 'text/html; charset=utf-8'), '/wellbeing.js': ('wellbeing.js', 'text/javascript; charset=utf-8'), '/hifz.js': ('hifz.js', 'text/javascript; charset=utf-8'), '/features.js': ('features.js', 'text/javascript; charset=utf-8'), '/app.js': ('app.js', 'text/javascript; charset=utf-8'), '/style.css': ('style.css', 'text/css; charset=utf-8'), '/manifest.json': ('manifest.json', 'application/manifest+json'), '/icon.svg': ('icon.svg', 'image/svg+xml')}
+        files = {'/': ('index.html', 'text/html; charset=utf-8'), '/recordings.js': ('recordings.js', 'text/javascript; charset=utf-8'), '/quran-meta.json': ('quran-meta.json', 'application/json; charset=utf-8'), '/wellbeing.js': ('wellbeing.js', 'text/javascript; charset=utf-8'), '/hifz.js': ('hifz.js', 'text/javascript; charset=utf-8'), '/features.js': ('features.js', 'text/javascript; charset=utf-8'), '/app.js': ('app.js', 'text/javascript; charset=utf-8'), '/style.css': ('style.css', 'text/css; charset=utf-8'), '/manifest.json': ('manifest.json', 'application/manifest+json'), '/icon.svg': ('icon.svg', 'image/svg+xml')}
         if path not in files: return self.reply(404, {'error': 'Tidak ditemukan.'})
         filename, mime = files[path]
         content = (ROOT / 'static' / filename).read_bytes()
@@ -124,6 +128,8 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         try:
+            path = urlsplit(self.path).path
+            if self.media_post(path): return
             # Require same-origin JSON; cross-site HTML forms cannot write.
             if self.headers.get('Sec-Fetch-Site') == 'cross-site': return self.reply(403, {'error': 'Origin ditolak.'})
             if self.headers.get('Content-Type', '').split(';')[0] != 'application/json': return self.reply(415, {'error': 'JSON diperlukan.'})

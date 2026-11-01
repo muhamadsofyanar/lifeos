@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.3.0
+- Rekam mikrofon dengan negosiasi format, pratinjau, putar, unggah file, loop, download dan hapus audio.
+- File audio persisten dan privat di /data/recordings, byte-range playback, indeks terpisah, validasi/kuota, deduplikasi.
+- Backup dan impor ZIP audio terpisah dari backup JSON; impor tidak valid dibatalkan.
+- Label 100 unit Juz 29 dari mutabaah Jilid 2; cakupan 604 halaman dari metadata Tanzil dengan atribusi.
+- Dukungan CSP media-src self/blob. Dockerfile menyalin media_store.py.
+- Tes backend audio, restart/persistensi, archive round-trip, autentikasi dan simulasi perekam frontend.
+
+
 ## 1.2.0
 - Panduan alur aplikasi dan bantuan kontekstual per halaman.
 - Ritme Today: anggaran kerja/belajar, tidur/istirahat, kontemplasi, Al-Qur’an, kewajiban tetap dan cadangan; peringatan Big 3 melebihi kapasitas.

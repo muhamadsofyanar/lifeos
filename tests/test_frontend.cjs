@@ -1,7 +1,7 @@
 const assert=require('node:assert/strict');const fs=require('node:fs');const vm=require('node:vm');
 const nodes=new Map();function node(sel){if(!nodes.has(sel))nodes.set(sel,{innerHTML:'',open:false,showModal(){this.open=true},close(){this.open=false},textContent:'',classList:{add(){},remove(){}}});return nodes.get(sel)}
 const ctx=vm.createContext({console,structuredClone,crypto:require('node:crypto').webcrypto,Date,setInterval(){},setTimeout(){},document:{querySelector:node,addEventListener(){}},confirm:()=>true,FormData:class{},fetch:()=>{throw Error('Unexpected network')},URL,Blob});
-vm.runInContext(fs.readFileSync('static/app.js','utf8')+'\n'+fs.readFileSync('static/features.js','utf8')+'\n'+fs.readFileSync('static/hifz.js','utf8')+'\n'+fs.readFileSync('static/wellbeing.js','utf8'),ctx);
+vm.runInContext(fs.readFileSync('static/app.js','utf8')+'\n'+fs.readFileSync('static/features.js','utf8')+'\n'+fs.readFileSync('static/hifz.js','utf8')+'\n'+fs.readFileSync('static/wellbeing.js','utf8')+'\n'+fs.readFileSync('static/recordings.js','utf8'),ctx);
 vm.runInContext(`
 data=normalizeClient(Object.fromEntries(['inbox','tasks','projects','notes','events','sessions','reviews','areas','goals','quran','quranSessions','plans','preferences'].map(k=>[k,[]])));
 `,ctx);
@@ -39,3 +39,13 @@ assert.equal(vm.runInContext('RUBU.map(([a,b])=>SURAHS.filter(s=>s.number>=a&&s.
 vm.runInContext(`data.dayPlans=[{id:today(),date:today(),work:20,rest:540,contemplation:15,quran:25,fixed:100,buffer:30}];data.tasks.push({id:'capacity',title:'A',bigDate:today(),status:'todo',estimate:90})`,ctx);
 assert.ok(vm.runInContext('dayBalance().includes("melebihi kapasitas")',ctx));
 console.log('Daily capacity warning and eight rubu boundaries passed.');
+vm.runInContext('quranMeta='+fs.readFileSync('static/quran-meta.json','utf8'),ctx);
+assert.equal(vm.runInContext("juzUnits(29).find(u=>u.id==='29:562:1').title.includes('Al-Mulk ayat 1–2')",ctx),true);
+assert.equal(vm.runInContext("quranMeta.unitTargets['29:564:3'].name",ctx),'Al-Qalam');
+assert.equal(vm.runInContext('Object.keys(quranMeta.pages).length',ctx),604);
+assert.equal(vm.runInContext('Object.keys(quranMeta.unitTargets).length',ctx),100);
+assert.equal(vm.runInContext('quranMeta.pages[604].at(-1).surah',ctx),114);
+vm.runInContext('hifzJuz=29',ctx);
+assert.ok(vm.runInContext("quranContent().includes('Al-Mulk 1–2')",ctx));
+assert.ok(vm.runInContext("quranContent().includes('audio-panel')",ctx));
+console.log('Verified metadata labels, 604 page references, 100 printed Juz 29 references and audio panel render.');
