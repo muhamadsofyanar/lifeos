@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.7.1 — batas ayat dan hubungan rekaman (1 November 2026)
+- Dropdown ayat dibatasi jumlah ayat surah; pilihan akhir mulai dari pilihan awal.
+- Perubahan surah menyiapkan ulang pilihan rentang; pemulihan draft menyiapkan opsi sebelum mengisi nilai lama.
+- Pilihan catatan latihan memuat tanggal, juz, target, durasi dan kode pembeda, dengan penyaringan per juz.
+- Tombol Rekam sesi ini dari riwayat mengisi hubungan dan target secara langsung.
+- Pemilihan sesi menyesuaikan target tanpa mengubah tanggal rekaman; judul pengguna dipertahankan.
+- Target di luar cakupan melepas hubungan di formulir; server menolak hubungan yang hilang/salah juz/di luar rentang saat upload.
+- Metadata target terstruktur disimpan pada rekaman baru, tetap kompatibel dengan metadata lama dan pemulihan ZIP audio.
+- Hubungan sesi yang tidak ditemukan ditampilkan sebagai tidak tersedia, tanpa mengubah rekaman lama.
+
 ## 1.7.0 — belajar sambil menerapkan (1 November 2026)
 - Menu Belajar LifeOS dengan 9 materi, sumber, contoh adaptasi dan latihan yang dapat disimpan.
 - Klinik Goal SMART lima langkah: draft, pemeriksaan bahan, pratinjau dan penerapan eksplisit ke Goal baru/yang dipilih.

@@ -1,6 +1,6 @@
-# LifeOS v1.7
+# LifeOS v1.7.1
 
-**Sudah deploy versi sebelumnya? Ikuti `UPDATE-v1.7.md`. Pertahankan volume `/data` yang sekarang.**
+**Sudah deploy versi sebelumnya? Ikuti `UPDATE-v1.7.1.md`. Pertahankan volume `/data` yang sekarang.**
 
 Versi 1.6 menambahkan impor gabung dan template seluruh jenis data. Versi 1.5 memperbaiki validasi backup, keamanan atribut HTML, tanggal selesai tugas, pemulihan metadata audio, riwayat/koreksi sesi hafalan, penilaian sambungan dua halaman, dan definisi pengukuran Goal. Seluruh fitur v1.4 tetap tersedia. Lihat `LAPORAN-PERBAIKAN-v1.5.md` dan `CHANGELOG.md`.
 
@@ -114,6 +114,7 @@ node tests/test_consolidated.cjs
 node tests/test_repairs.cjs
 node tests/test_transfer_ui.cjs
 node tests/test_academy.cjs
+node tests/test_quran_forms.cjs
 ```
 
 Integration test memeriksa autentikasi, CSRF, penyimpanan/readback, konflik revisi, penolakan timer ganda, history, restore state dan logout. Docker image dan deployment Coolify perlu diverifikasi di server tujuan.
@@ -163,3 +164,11 @@ Klinik Goal SMART memiliki lima langkah dan pratinjau. Bahan yang belum diketahu
 Materi dapat dijadikan kartu Belajar & Praktik untuk dikembangkan melalui Edit, diberi tanggal review, dan dicoba dalam pekerjaan nyata. Membuat kartu tidak membuat Task atau riwayat praktik secara otomatis. Tautan artikel membuka sumber asli; aplikasi tidak mengambil seluruh artikel atau menjalankan AI.
 
 Materi dan alur aplikasi merupakan adaptasi tertulis yang dirujuk pada SUMBER-PEMBELAJARAN.md. SMART memakai varian Achievable/Relevant dari CDC; tidak diklaim sebagai metode eksklusif Darmawan Aji. Aplikasi menggunakan pemetaan Goal/indikator untuk memperkenalkan OKR, belum merupakan sistem OKR tim lengkap.
+
+## Perbaikan formulir hafalan v1.7.1
+
+Pilihan Dari ayat dan Sampai ayat memakai dropdown yang dibatasi jumlah ayat surah. Saat surah berubah, rentang dipilih ulang mulai ayat 1. Sampai ayat tidak dapat mendahului Dari ayat. Batas yang sama berlaku pada catatan sesi, koreksi sesi dan rekaman.
+
+Catatan latihan pada perekam menampilkan tanggal, juz, surah/rentang atau unit, durasi dan kode pembeda. Tombol Rekam sesi ini pada riwayat langsung membuka perekam dengan catatan tersebut terpilih. Memilih catatan mengisi target hafalan, tetapi tidak mengubah tanggal rekaman, membuat sesi baru, atau mengubah penilaian. Judul yang ditulis pengguna dipertahankan.
+
+Audio boleh merekam bagian yang lebih kecil dari cakupan sesi. Mengubah target ke luar cakupan melepas hubungan pada formulir dengan penjelasan. Server memeriksa hubungan saat upload. Arsip audio lama tetap dapat dipulihkan meskipun backup JSON belum dipulihkan; hubungan yang tidak tersedia ditampilkan secara jelas dan tidak ditebak.

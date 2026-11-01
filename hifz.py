@@ -2,6 +2,13 @@
 import math
 from workflow import number
 
+# Juz 30 verse counts, consistent with the bundled Quran metadata.
+JUZ30_COUNTS = dict(enumerate([40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6],78))
+
+def validate_verse_range(surah,start,end):
+    if type(surah) is not int or surah not in JUZ30_COUNTS or type(start) is not int or type(end) is not int or not 1<=start<=end<=JUZ30_COUNTS[surah]:
+        raise ValueError('Rentang ayat tidak sesuai jumlah ayat surah Juz 30.')
+
 def page_range(juz):
     if juz == 1: return 1,21
     if juz == 30: return 582,604

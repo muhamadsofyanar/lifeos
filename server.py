@@ -6,6 +6,7 @@ from http.cookies import SimpleCookie
 from urllib.parse import urlsplit
 from media_store import MediaMixin, setup as setup_media
 from data_transfer import merge_import, unpack
+from hifz import JUZ30_COUNTS
 
 ROOT = Path(__file__).parent
 DATA = Path(os.environ.get('DATA_DIR', str(ROOT / 'data')))
@@ -19,10 +20,8 @@ LOCK = threading.Lock()
 LEGACY_KINDS = ['inbox', 'tasks', 'projects', 'notes', 'events', 'sessions', 'reviews', 'areas', 'goals']
 
 KINDS = LEGACY_KINDS + ['quran', 'quranSessions', 'plans', 'preferences', 'quranUnits', 'quranUnitSessions', 'quranChecks', 'learning', 'practiceLogs', 'dayPlans', 'metricLogs', 'routines', 'routineLogs', 'timeEntries']
-VERSE_COUNTS = [40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6]
-
 def counts_for_surah(surah):
-    return VERSE_COUNTS[surah - 78]
+    return JUZ30_COUNTS[surah]
 
 def normalize(data):
     if isinstance(data, dict) and set(LEGACY_KINDS).issubset(data) and set(data).issubset(KINDS):

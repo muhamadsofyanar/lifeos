@@ -9,14 +9,42 @@ function qnext(){for(const s of SURAHS)for(let a=1;a<=s.count;a++){if(!['self','
 function quranToday(){const cfg=qsettings(),logs=data.quranSessions.filter(l=>l.date===today()),minutes=logs.reduce((n,l)=>n+l.minutes,0),next=qnext();return `<div class="panel quran-today"><span class="pill">AL-QUR’AN · JUZ 30</span><h3>Rubu’ Al-Qari’ah–An-Nas</h3><p>${esc(cfg.time)} · target ${Number(cfg.minutes)} menit<br>Hari ini: <b>${minutes} menit tercatat</b></p><p>${next?'Bagian untuk dicek: '+esc(next.title)+' ayat '+next.ayah:'Seluruh rubu tercatat lancar. Jaga dengan murajaah.'}</p>${btn('Buka mutabaah →','nav','Sullamul Hifz')}</div>`}
 function quranContent(){const cfg=qsettings(),total=79,self=data.quran.filter(v=>['self','teacher'].includes(v.status)).length,teacher=data.quran.filter(v=>v.status==='teacher').length,next=qnext(),weak=data.quran.filter(v=>v.status==='strengthen');const recent=data.quranSessions.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'')||b.created-a.created).slice(0,30);return `<div class="section-title"><div><span class="pill">SULLAMUL HIFZ · TAHAP AWAL</span><h2>Sedikit demi sedikit, tetap terjaga.</h2></div>${btn('Atur rutinitas','q-settings')}</div><div class="stats"><div><small>LANCAR MANDIRI / GURU</small><b>${self}<em> / ${total} ayat</em></b></div><div><small>DISIMAK GURU</small><b>${teacher}<em> ayat</em></b></div><div><small>TARGET HARIAN</small><b>${Number(cfg.minutes)}<em> menit</em></b></div></div><div class="two"><div class="panel"><h2>Rencana sesi hari ini</h2><p>${esc(cfg.time)} · ${Number(cfg.minutes)} menit. Ini alokasi awal; sesuaikan kemampuan.</p><ol><li>Murajaah awal: sekitar 5 menit.</li><li>${next?'Cek '+esc(next.title)+' ayat '+next.ayah+'. Jika siap, pelajari dan sambungkan.':'Utamakan murajaah seluruh rubu.'} Alokasi hafalan baru sekitar ${Number(cfg.newMinutes)} menit.</li><li>Sisa waktu: ulang bagian sebelumnya, rekam, dan dengarkan kembali.</li></ol><p>Jika belum kuat, gunakan seluruh sesi untuk murajaah. “Bagian untuk dicek” berdasarkan catatanmu, bukan rekomendasi guru.</p>${btn('+ Catat sesi','q-log','','primary')}</div><div class="panel"><h2>Bagian yang perlu dijaga</h2>${weak.length?weak.map(v=>`<p>${esc(SURAHS.find(x=>x.number===v.surah).title)} ${v.ayah} · ${esc(v.note||'Ulang dan sambungkan.')}</p>`).join(''):'<p>Belum ada bagian ditandai perlu penguatan. Tandai sesuai keadaan sebenarnya.</p>'}<p class="notice">Rekaman mandiri membantu evaluasi, tetapi tidak sama dengan disimak guru. Periksa bacaan secara berkala ketika memungkinkan.</p></div></div><h2>Mutabaah rubu’ 1</h2><p>Ketuk nomor ayat untuk memperbarui status dan catatan. Penyelesaian rubu tidak otomatis menaikkan tahap.</p><div class="grid">${SURAHS.map(s=>`<article class="panel"><div class="section-title"><h3>${s.number}. ${esc(s.title)}</h3><small>${s.count} ayat</small></div><div class="verse-list">${Array.from({length:s.count},(_,i)=>{const a=i+1,v=verseState(s.number,a);return `<button class="verse ${v?.status||''}" data-action="q-verse" data-id="${s.number}:${a}" title="${esc(QSTATUS[v?.status]||'Belum dicatat')}" aria-label="${esc(s.title)} ayat ${a}: ${esc(QSTATUS[v?.status]||'Belum dicatat')}">${a}</button>`}).join('')}</div></article>`).join('')}</div><div class="legend">Kosong: belum dicatat · Dilatih · Perlu penguatan · Lancar mandiri · Disimak guru</div><h2>Catatan sesi</h2>${recent.map(l=>`<div class="panel"><div class="section-title"><h3>${esc(l.date)} · ${l.minutes} menit</h3>${btn('Koreksi sesi','q-log-edit',l.id)}</div><p>${esc(SURAHS.find(x=>x.number===l.surah)?.title)} ayat ${l.from}–${l.to} · ${esc(l.mode)} · ${esc(QSTATUS[l.status]||'Latihan saja')}</p><p>${esc(l.note)}</p><small>Riwayat sesi menyimpan penilaian saat itu; status mutabaah dapat berubah setelah evaluasi berikutnya.</small></div>`).join('')||empty('Mulai dengan sesi pertama.','Tidak perlu langsung lancar untuk mencatat latihan.')}`}
 function selectOptions(values,current){return values.map(([v,l])=>`<option value="${esc(v)}" ${String(v)===String(current)?'selected':''}>${esc(l)}</option>`).join('')}
-function showForm(title,html,save){$('#modal').innerHTML=`<form id="feature-form"><div class="section-title"><h2>${title}</h2>${btn('✕','close')}</div>${html}<div class="actions"><button class="primary" type="submit">Simpan</button>${btn('Batal','close')}</div></form>`;$('#modal').showModal();$('#feature-form').onsubmit=async e=>{e.preventDefault();const submit=e.submitter;if(submit)submit.disabled=true;try{const result=await save(Object.fromEntries(new FormData(e.target)));if(result)$('#modal').close()}catch(x){toast(x.message)}finally{if(submit)submit.disabled=false}}}
+function showForm(title,html,save){$('#modal').innerHTML=`<form id="feature-form"><div class="section-title"><h2>${title}</h2>${btn('✕','close')}</div>${html}<div class="actions"><button class="primary" type="submit">Simpan</button>${btn('Batal','close')}</div></form>`;$('#modal').showModal();$('#feature-form').onsubmit=async e=>{e.preventDefault();const submit=e.submitter;if(submit)submit.disabled=true;try{const result=await save(Object.fromEntries(new FormData(e.target)));if(result)$('#modal').close()}catch(x){toast(x.message)}finally{if(submit)submit.disabled=false}};bindVerseRange($('#feature-form'))}
+function verseRangeFields(surah,from=1,to=from){
+ const chapter=SURAHS.find(s=>s.number===Number(surah))||SURAHS.find(s=>s.number===101);
+ const start=Number.isInteger(Number(from))&&Number(from)>=1&&Number(from)<=chapter.count?Number(from):1;
+ const end=Number.isInteger(Number(to))&&Number(to)>=start&&Number(to)<=chapter.count?Number(to):start;
+ return '<div data-verse-range>'+field('Surah','surah',chapter.number,'select',selectOptions(SURAHS.map(s=>[s.number,s.title]),chapter.number))+
+  field('Dari ayat','from',start,'select',selectOptions(Array.from({length:chapter.count},(_,i)=>[i+1,'Ayat '+(i+1)]),start))+
+  field('Sampai ayat','to',end,'select',selectOptions(Array.from({length:chapter.count-start+1},(_,i)=>[start+i,'Ayat '+(start+i)]),end))+
+  '<p class="muted" data-verse-hint>'+esc(chapter.title)+' memiliki '+chapter.count+' ayat. Pilih rentang yang benar-benar dilatih.</p></div>';
+}
+function bindVerseRange(form){
+ const surah=form?.querySelector?.('[name=surah]'),from=form?.querySelector?.('[name=from]'),to=form?.querySelector?.('[name=to]');
+ if(!surah||!from||!to)return;
+ if(form.verseRangeController){form.verseRangeController.refresh();return}
+ const hint=form.querySelector('[data-verse-hint]');
+ const update=(reset=false)=>{
+  const chapter=SURAHS.find(s=>s.number===Number(surah.value));if(!chapter)return;
+  const a=Number(from.value),b=Number(to.value);
+  const start=!reset&&Number.isInteger(a)&&a>=1&&a<=chapter.count?a:1;
+  const end=!reset&&Number.isInteger(b)&&b>=start&&b<=chapter.count?b:start;
+  from.innerHTML=selectOptions(Array.from({length:chapter.count},(_,i)=>[i+1,'Ayat '+(i+1)]),start);
+  to.innerHTML=selectOptions(Array.from({length:chapter.count-start+1},(_,i)=>[start+i,'Ayat '+(start+i)]),end);
+  from.value=String(start);to.value=String(end);
+  if(hint)hint.textContent=chapter.title+' memiliki '+chapter.count+' ayat. Dari ayat '+start+' sampai '+end+'.'+(reset?' Surah berubah; pilih kembali rentang yang sesuai.':'');
+ };
+ surah.addEventListener('change',()=>update(true));from.addEventListener('change',()=>update(false));to.addEventListener('change',()=>update(false));
+ form.verseRangeController={refresh:()=>update(false),setRange:(s,a,b)=>{surah.value=String(s);update(true);from.value=String(a);update(false);to.value=String(b);update(false)}};
+ update(false);
+}
+function prepareVerseRangeDraft(form,values){if(form?.verseRangeController&&values?.surah)form.verseRangeController.setRange(values.surah,values.from||1,values.to||values.from||1)}
 function qlog(id){
  const old=data.quranSessions.find(l=>l.id===id),next=qnext();
  const s=old||{date:today(),minutes:qsettings().minutes,surah:next?.surah||101,from:next?.ayah||1,to:next?.ayah||1,mode:'Hafalan baru + murajaah',status:'practiced'};
  showForm(old?'Koreksi catatan sesi':'Catat sesi Al-Qur’an',
   field('Tanggal','date',s.date,'date')+field('Durasi aktual (1–240 menit)','minutes',s.minutes,'number')+
-  field('Surah yang dicatat','surah',s.surah||101,'select',selectOptions(SURAHS.map(x=>[x.number,x.title]),s.surah||101))+
-  field('Dari ayat','from',s.from||1,'number')+field('Sampai ayat','to',s.to||s.from||1,'number')+
+  verseRangeFields(s.surah||101,s.from||1,s.to||s.from||1)+
   field('Jenis sesi','mode',s.mode||'Hafalan baru + murajaah','select',selectOptions(['Hafalan baru + murajaah','Murajaah saja','Setoran ke guru'].map(x=>[x,x]),s.mode||'Hafalan baru + murajaah'))+
   field('Penilaian saat sesi','status',s.status||'practiced','select',selectOptions(Object.entries(QSTATUS),s.status||'practiced'))+
   field('Kesalahan, sambungan, atau bagian yang perlu diperkuat','note',s.note,'textarea')+
@@ -36,6 +64,7 @@ function qlog(id){
     if(apply)for(let a=v.from;a<=v.to;a++)upsertVerse(v.surah,a,v.status,v.note,v.teacher,v.date);
    });
   });
+ bindVerseRange($('#feature-form'));
 }
 function upsertVerse(surah,ayah,status,note='',teacher='',date=today()){const v={id:surah+':'+ayah,surah,ayah,status,note,teacher:status==='teacher'?teacher:'',date};const index=data.quran.findIndex(x=>x.id===v.id);if(index<0)data.quran.push(v);else data.quran[index]=v}
 // Guided planning uses explicit templates and user answers, no AI service.

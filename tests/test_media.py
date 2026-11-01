@@ -87,3 +87,31 @@ class MediaTest(unittest.TestCase):
             meta={'title':'Fixture','date':'2026-11-01','juz':29,'duration':1,**update}
             headers={'Content-Type':'audio/wav','X-Recording-Metadata':urllib.parse.quote(json.dumps(meta))}
             self.assertEqual(self.request('recordings',wav(),headers)[0],400)
+
+    def test_recording_target_and_session_contract(self):
+        self.login()
+        state=json.loads(self.request('state')[1])
+        state['data']['quranSessions']=[{'id':'linked-q','date':'2026-11-01','minutes':20,'surah':101,'from':1,'to':5,'status':'practiced'}]
+        state['data']['quranUnitSessions']=[{'id':'linked-unit','date':'2026-11-01','minutes':20,'juz':29,'units':['29:562:1'],'status':'practiced'}]
+        self.assertEqual(self.request('state',json.dumps({'revision':state['revision'],'data':state['data']}).encode(),{'Content-Type':'application/json'})[0],200)
+        original=wav();fixture=original[:-2]+b'\x01\x00'
+        metadata={'title':'Structured audio fixture','date':'2026-11-01','juz':30,'target':'Al-Qari’ah ayat 1–2','targetVersion':1,'surah':101,'from':1,'to':2,'session':'linked-q','duration':1}
+        for update in [{'to':-1},{'to':12},{'to':6},{'surah':102},{'session':'linked-unit'},{'session':'deleted'}]:
+            headers={'Content-Type':'audio/wav','X-Recording-Metadata':urllib.parse.quote(json.dumps({**metadata,**update}))}
+            with self.subTest(update=update):self.assertEqual(self.request('recordings',fixture,headers)[0],400)
+        headers={'Content-Type':'audio/wav','X-Recording-Metadata':urllib.parse.quote(json.dumps(metadata))}
+        code,result,_=self.request('recordings',fixture,headers)
+        self.assertEqual(code,200)
+        rid=json.loads(result)['id']
+        saved=next(r for r in json.loads(self.request('recordings')[1])['recordings'] if r['id']==rid)
+        self.assertEqual((saved['surah'],saved['from'],saved['to'],saved['session']),(101,1,2,'linked-q'))
+        backup=self.request('recordings/export')[1]
+        self.assertEqual(self.request('recordings/delete',json.dumps({'id':rid}).encode(),{'Content-Type':'application/json'})[0],200)
+        # Audio archive restoration can precede JSON restore; retain its old reference,
+        # so the UI can show that the referenced session is not currently available.
+        state=json.loads(self.request('state')[1]);state['data']['quranSessions']=[];state['data']['quranUnitSessions']=[]
+        self.assertEqual(self.request('state',json.dumps({'revision':state['revision'],'data':state['data']}).encode(),{'Content-Type':'application/json'})[0],200)
+        self.assertEqual(self.request('recordings/import',backup,{'Content-Type':'application/zip'})[0],200)
+        restored=next(r for r in json.loads(self.request('recordings')[1])['recordings'] if r['title']==metadata['title'])
+        self.assertEqual((restored['surah'],restored['from'],restored['to'],restored['session']),(101,1,2,'linked-q'))
+        self.assertEqual(self.request('recordings/'+restored['id'])[1],fixture)

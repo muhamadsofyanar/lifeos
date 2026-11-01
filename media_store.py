@@ -3,6 +3,7 @@ import contextlib, hashlib, json, math, os, re, secrets, shutil, sqlite3, tempfi
 from pathlib import Path
 from urllib.parse import unquote
 from workflow import valid_date, number
+from hifz import validate_verse_range, unit_ids
 
 MEDIA_LOCK=threading.RLock()
 MAX_FILE=50*1024*1024
@@ -37,7 +38,33 @@ def clean_metadata(meta):
     if not number(duration,0,86400):raise ValueError('Durasi audio tidak valid.')
     for key in ['target','note','session']:
         if not isinstance(meta.get(key,''),str) or len(meta.get(key,''))>4000:raise ValueError('Catatan audio terlalu panjang.')
-    result={k:meta.get(k,'') for k in ['title','date','juz','target','note','session']};result['duration']=duration;return result
+    result={k:meta.get(k,'') for k in ['title','date','juz','target','note','session']};result['duration']=duration
+    if 'targetVersion' in meta:
+        if type(meta['targetVersion']) is not int or meta['targetVersion']!=1:raise ValueError('Versi target audio tidak dikenali.')
+        result['targetVersion']=1
+        if juz==30:
+            validate_verse_range(meta.get('surah'),meta.get('from'),meta.get('to'))
+            result.update({key:meta[key] for key in ['surah','from','to']})
+        else:
+            unit=meta.get('unit')
+            if not isinstance(unit,str) or unit not in unit_ids(juz):raise ValueError('Unit audio tidak sesuai juz.')
+            result['unit']=unit
+    return result
+
+def validate_session_reference(conn,meta):
+    if not meta.get('session'):return
+    row=conn.execute('SELECT body FROM state WHERE id=1').fetchone()
+    if row is None:raise ValueError('Data catatan sesi belum tersedia.')
+    state=json.loads(row[0]);juz=meta['juz']
+    sessions=state['quranSessions'] if juz==30 else [s for s in state['quranUnitSessions'] if s.get('juz')==juz]
+    selected=next((s for s in sessions if s['id']==meta['session']),None)
+    if selected is None:raise ValueError('Catatan sesi tidak ditemukan untuk juz ini. Muat ulang dan pilih sesi yang sesuai.')
+    if meta.get('targetVersion')==1:
+        if juz==30:
+            validate_verse_range(selected.get('surah'),selected.get('from'),selected.get('to'))
+            if meta['surah']!=selected['surah'] or meta['from']<selected['from'] or meta['to']>selected['to']:
+                raise ValueError('Rentang audio berada di luar rentang catatan sesi.')
+        elif meta['unit'] not in selected.get('units',[]):raise ValueError('Unit audio tidak termasuk catatan sesi.')
 
 def rows(conn):
     return [dict(zip(['id','filename','mime','size','sha256','metadata','created'],r)) for r in conn.execute('SELECT id,filename,mime,size,sha256,metadata,created FROM recordings ORDER BY created DESC')]
@@ -129,7 +156,7 @@ class MediaMixin:
             if not self.headers.get('Content-Type','').startswith(('audio/','video/mp4','application/octet-stream')):raise ValueError('Upload harus berupa audio.')
             body=self.read_body(MAX_FILE)
             with MEDIA_LOCK,db() as conn:
-                conn.execute('BEGIN IMMEDIATE');rid,created=insert_audio(conn,body,meta)
+                conn.execute('BEGIN IMMEDIATE');validate_session_reference(conn,meta);rid,created=insert_audio(conn,body,meta)
             self.reply(200,{'id':rid,'created':created});return True
         if path.endswith('/delete'):
             if self.headers.get('Content-Type','').split(';')[0]!='application/json':raise ValueError('JSON diperlukan.')
