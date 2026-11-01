@@ -56,3 +56,17 @@ dialog{overflow-y:auto;max-height:90dvh}
  .focus{padding:20px}
  #smart-form .actions{bottom:-20px}
 }
+/* Full-scope review keeps text and recorder in the same dialog. */
+@font-face{font-family:AmiriQuran;src:url('/AmiriQuran-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+#modal:has(.murajaah-recorder){width:min(1000px,96vw)}
+.murajaah-panel{border-left:4px solid var(--green)}
+.murajaah-controls{position:sticky;top:-28px;z-index:2;background:#eef3e4;border:1px solid var(--line);padding:12px;border-radius:10px}
+.murajaah-history{margin-top:20px}
+.murajaah-history summary{cursor:pointer;font-weight:600}
+.quran-arabic{font-family:AmiriQuran,'Traditional Arabic',serif;font-size:34px;line-height:2.5;text-align:right;background:#fcf9ed;border:1px solid #e8e0c8;border-radius:12px;padding:26px;overflow-wrap:normal}
+.quran-arabic h3{font-family:inherit;font-size:1.1em;text-align:center;border-bottom:1px solid #e8e0c8;padding:12px;margin:12px 0}
+.quran-arabic p{color:var(--ink);margin:14px 0;overflow-wrap:normal}
+.ayah-number{display:inline-block;font-size:.7em;padding:0 .25em;white-space:nowrap}
+.quran-size-28{font-size:28px}.quran-size-34{font-size:34px}.quran-size-42{font-size:42px}
+.quran-attribution{font-size:12px}
+@media(max-width:650px){#modal:has(.murajaah-recorder){width:calc(100vw - 16px);padding:16px}.murajaah-controls{top:-16px;padding:8px;gap:8px}.quran-arabic{padding:14px;font-size:28px}.quran-size-34{font-size:34px}.quran-size-42{font-size:42px}.quran-arabic h3{padding:8px}}

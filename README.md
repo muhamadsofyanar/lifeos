@@ -1,10 +1,12 @@
-# LifeOS v1.7.2
+# LifeOS v1.8.0
 
-**Sudah deploy versi sebelumnya? Ikuti `UPDATE-v1.7.2.md`. Pertahankan volume `/data` yang sekarang.**
+**Sudah deploy versi sebelumnya? Ikuti `UPDATE-v1.8.0.md`. Pertahankan volume `/data` yang sekarang.**
 
 Versi 1.6 menambahkan impor gabung dan template seluruh jenis data. Versi 1.5 memperbaiki validasi backup, keamanan atribut HTML, tanggal selesai tugas, pemulihan metadata audio, riwayat/koreksi sesi hafalan, penilaian sambungan dua halaman, dan definisi pengukuran Goal. Seluruh fitur v1.4 tetap tersedia. Lihat `LAPORAN-PERBAIKAN-v1.5.md` dan `CHANGELOG.md`.
 
 Aplikasi produktivitas pribadi single-user dalam bahasa Indonesia. Siap dijalankan sebagai satu container Docker di Coolify. Tidak memerlukan layanan eksternal, CDN, API berbayar, atau instalasi package saat startup.
+
+Versi 1.8.0 menambahkan murajaah halaman/surah/rubu/juz utuh, teks Uthmani lokal, catatan murajaah dan batas rekaman panjang. Baca `UPDATE-v1.8.0.md`, `CEK-v1.8.0.md` dan `LAPORAN-MURAJAAH-v1.8.0.md`.
 
 Versi 1.7.2 menambahkan penelusuran folder/tag Notes, pembaca catatan lengkap, dan menu layar kecil. Panduan pemeriksaan tersedia di `CEK-v1.7.2.md`.
 

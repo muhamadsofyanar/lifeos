@@ -1,3 +1,12 @@
+# v1.8.0 — Murajaah utuh
+
+- Cakupan satu halaman, satu surah, satu rubu atau satu juz penuh; rentang dihitung dari metadata ayat.
+- Rubu Juz 30 mengikuti buku; juz lain memakai rubu standar berlabel jelas.
+- Teks Uthmani Tanzil dan font Amiri Quran lokal, pembaca RTL dengan ukuran huruf dan atribusi.
+- Bacaan dan kontrol rekam dalam dialog yang sama; batas 30/60/120 menit untuk murajaah utuh, pengaman ukuran audio tetap berlaku.
+- Catatan/koreksi murajaah serta hubungan audio ke cakupan sesi yang sesuai, tanpa mutabaah otomatis.
+- Kompatibilitas metadata lama dan backup audio tetap dipertahankan.
+
 # v1.7.2 — Notes dan layar kecil
 
 - Filter folder dan tag yang dapat digabungkan dengan pencarian, hitungan hasil dan reset.

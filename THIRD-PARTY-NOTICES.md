@@ -17,3 +17,17 @@ https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/isTypeSupported_s
 https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
 
 No external runtime audio service or remote Quran metadata request is required by the application. All recording storage remains on the configured server volume.
+
+
+## Quran text Uthmani v1.1
+
+Source: https://tanzil.net/download/
+Raw source URL used: https://tanzil.net/pub/download/index.php?quranType=uthmani&outType=txt&agree=true
+File: static/quran-uthmani.txt. Downloaded 2026-11-01. The raw file and its full copyright block are unmodified; reader displays the corresponding verse lines without rewriting. License and attribution: https://tanzil.net/docs/Text_License.
+
+SHA-256: ac0724796cbbda0f4801470fbbd11d0f3c5802067bae0493466d0128b0c667af
+
+## Amiri Quran font
+
+Source: https://github.com/google/fonts/tree/main/ofl/amiriquran
+Files: static/AmiriQuran-Regular.ttf and static/AmiriQuran-OFL.txt. License: SIL Open Font License 1.1.

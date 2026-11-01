@@ -115,3 +115,44 @@ class MediaTest(unittest.TestCase):
         restored=next(r for r in json.loads(self.request('recordings')[1])['recordings'] if r['title']==metadata['title'])
         self.assertEqual((restored['surah'],restored['from'],restored['to'],restored['session']),(101,1,2,'linked-q'))
         self.assertEqual(self.request('recordings/'+restored['id'])[1],fixture)
+
+    def test_whole_scope_review_persistence_audio_and_archive(self):
+        self.login()
+        state=json.loads(self.request('state')[1]);d=state['data']
+        log={'id':'whole-mulk','coverageVersion':1,'date':'2026-11-01','juz':29,
+             'scope':{'kind':'surah','value':67},'minutes':45,'readingMode':'hafalan',
+             'status':'self','kind':'Murajaah utuh','decision':'Catatan sesi murajaah','assessor':''}
+        d['quranChecks']=[log]
+        request={'revision':state['revision'],'data':d}
+        self.assertEqual(self.request('state',json.dumps(request).encode(),{'Content-Type':'application/json'})[0],200)
+        stored=json.loads(self.request('state')[1]);self.assertEqual(stored['data']['quranChecks'][0]['scope'],log['scope'])
+        # Reject malformed whole scopes without losing committed review or mutabaah.
+        for patch in [{'scope':{'kind':'page','value':-1}},{'minutes':True},{'status':'teacher','assessor':''}]:
+            invalid=json.loads(json.dumps(stored));invalid['data']['quranChecks'][0].update(patch)
+            self.assertEqual(self.request('state',json.dumps({'revision':stored['revision'],'data':invalid['data']}).encode(),{'Content-Type':'application/json'})[0],400)
+            self.assertEqual(json.loads(self.request('state')[1])['revision'],stored['revision'])
+        original=wav()
+        for i,(j,kind,value) in enumerate([(29,'page',562),(29,'surah',67),(30,'rubu',1),(30,'juz',30)],1):
+            metadata={'title':'Whole fixture '+str(i),'date':'2026-11-01','juz':j,'targetVersion':2,'scope':{'kind':kind,'value':value},'duration':3600,'reviewSession':'whole-mulk' if j==29 else ''}
+            headers={'Content-Type':'audio/wav','X-Recording-Metadata':urllib.parse.quote(json.dumps(metadata))}
+            payload=original[:-2]+bytes([i+20,0]);code,body,_=self.request('recordings',payload,headers);self.assertEqual(code,200)
+            rid=json.loads(body)['id'];r=next(r for r in json.loads(self.request('recordings')[1])['recordings'] if r['id']==rid)
+            self.assertEqual(r['scope'],metadata['scope']);self.assertEqual(r['targetVersion'],2);self.assertEqual(self.request('recordings/'+rid)[1],payload)
+        # Full-juz audio cannot pretend to belong to a one-surah review.
+        metadata.update(juz=29,scope={'kind':'juz','value':29},reviewSession='whole-mulk')
+        headers['X-Recording-Metadata']=urllib.parse.quote(json.dumps(metadata))
+        self.assertEqual(self.request('recordings',original[:-2]+b'\x50\x00',headers)[0],400)
+        backup=self.request('recordings/export')[1]
+        with zipfile.ZipFile(io.BytesIO(backup)) as z:
+            manifest=json.loads(z.read('recordings.json'))
+            full=[r for r in manifest['recordings'] if r['metadata'].get('targetVersion')==2]
+            self.assertEqual(len(full),4)
+        # Restoring an audio archive before its JSON keeps the review reference.
+        for r in json.loads(self.request('recordings')[1])['recordings']:
+            if r.get('targetVersion')==2:self.request('recordings/delete',json.dumps({'id':r['id']}).encode(),{'Content-Type':'application/json'})
+        state=json.loads(self.request('state')[1]);state['data']['quranChecks']=[]
+        self.request('state',json.dumps({'revision':state['revision'],'data':state['data']}).encode(),{'Content-Type':'application/json'})
+        self.assertEqual(self.request('recordings/import',backup,{'Content-Type':'application/zip'})[0],200)
+        restored=[r for r in json.loads(self.request('recordings')[1])['recordings'] if r.get('targetVersion')==2]
+        self.assertEqual(len(restored),4)
+        self.assertEqual(sum(r.get('reviewSession')=='whole-mulk' for r in restored),2)

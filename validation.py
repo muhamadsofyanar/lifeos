@@ -103,6 +103,14 @@ def validate_shapes(data):
                 raise ValueError(f'{kind}: tanggal pencatatan diperlukan.')
 
     for check in data['quranChecks']:
+        if 'coverageVersion' in check:
+            from quran_coverage import coverage
+            if type(check['coverageVersion']) is not int or check['coverageVersion']!=1:raise ValueError('Versi murajaah tidak dikenal.')
+            coverage(check.get('juz'),check.get('scope'))
+            if not number(check.get('minutes'),1,240):raise ValueError('Durasi murajaah harus 1–240 menit.')
+            if check.get('readingMode') not in ['melihat','hafalan']:raise ValueError('Pilih membaca atau mengulang dari hafalan.')
+            if check.get('status') not in ['practiced','strengthen','self','teacher']:raise ValueError('Penilaian murajaah tidak valid.')
+            if check.get('status')=='teacher' and not check.get('assessor','').strip():raise ValueError('Isi nama penyimak murajaah.')
         if type(check.get('juz')) is not int or not 1 <= check['juz'] <= 30 or not valid_date(check.get('date')):
             raise ValueError('Juz/tanggal evaluasi tidak valid.')
         scores = [check.get('score' + str(i), 'belum') for i in range(5)]

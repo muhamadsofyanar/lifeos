@@ -4,6 +4,7 @@ from pathlib import Path
 from urllib.parse import unquote
 from workflow import valid_date, number
 from hifz import validate_verse_range, unit_ids
+from quran_coverage import coverage
 
 MEDIA_LOCK=threading.RLock()
 MAX_FILE=50*1024*1024
@@ -39,6 +40,13 @@ def clean_metadata(meta):
     for key in ['target','note','session']:
         if not isinstance(meta.get(key,''),str) or len(meta.get(key,''))>4000:raise ValueError('Catatan audio terlalu panjang.')
     result={k:meta.get(k,'') for k in ['title','date','juz','target','note','session']};result['duration']=duration
+    if type(meta.get('targetVersion')) is int and meta['targetVersion']==2:
+        c=coverage(juz,meta.get('scope'))
+        if meta.get('session'):raise ValueError('Gunakan catatan murajaah untuk cakupan utuh, bukan sesi potongan latihan.')
+        ref=meta.get('reviewSession','')
+        if not isinstance(ref,str) or len(ref)>250:raise ValueError('Hubungan murajaah tidak valid.')
+        result.update(targetVersion=2,scope=c['scope'],target=c['label'],reviewSession=ref)
+        return result
     if 'targetVersion' in meta:
         if type(meta['targetVersion']) is not int or meta['targetVersion']!=1:raise ValueError('Versi target audio tidak dikenali.')
         result['targetVersion']=1
@@ -52,6 +60,16 @@ def clean_metadata(meta):
     return result
 
 def validate_session_reference(conn,meta):
+    if meta.get('targetVersion')==2:
+        if not meta.get('reviewSession'):return
+        row=conn.execute('SELECT body FROM state WHERE id=1').fetchone()
+        if row is None:raise ValueError('Data catatan murajaah belum tersedia.')
+        logs=json.loads(row[0]).get('quranChecks',[])
+        selected=next((l for l in logs if l.get('coverageVersion')==1 and l.get('id')==meta['reviewSession'] and l.get('juz')==meta['juz']),None)
+        if selected is None:raise ValueError('Catatan murajaah tidak ditemukan untuk juz ini.')
+        parent=coverage(selected['juz'],selected.get('scope'));child=coverage(meta['juz'],meta['scope'])
+        if child['start']<parent['start'] or child['end']>parent['end']:raise ValueError('Cakupan audio berada di luar catatan murajaah.')
+        return
     if not meta.get('session'):return
     row=conn.execute('SELECT body FROM state WHERE id=1').fetchone()
     if row is None:raise ValueError('Data catatan sesi belum tersedia.')
