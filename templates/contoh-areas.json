@@ -1,0 +1,15 @@
+{
+  "kind": "lifeos-import",
+  "version": "1.0",
+  "purpose": "example",
+  "name": "CONTOH FIKTIF — Area kehidupan",
+  "data": {
+    "areas": [
+      {
+        "id": "demo-area",
+        "title": "CONTOH FIKTIF — Area belajar",
+        "body": "Hanya contoh bentuk kolom; bukan data pribadi."
+      }
+    ]
+  }
+}

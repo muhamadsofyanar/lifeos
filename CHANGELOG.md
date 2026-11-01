@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.6.0 — impor gabung & template (1 November 2026)
+- Impor JSON dengan pemilihan jenis data, pratinjau dan penyimpanan atomik menggunakan pemeriksaan revisi.
+- Data lama dipertahankan; pencocokan ID/nama/kunci memetakan kembali relasi antar-data.
+- ID duplikat dalam file, referensi hilang, nama ambigu, timer aktif dan data tidak valid ditolak.
+- Template kosong, contoh fiktif dan panduan kolom untuk seluruh 23 jenis data; audio melalui alur ZIP yang sudah ada.
+- Isian pribadi berdasarkan percakapan: 6 Area, 14 Goal, 14 Project, 42 Task dan 15 Note; tanpa riwayat atau angka aktual buatan.
+- Format paket impor dibedakan dari restore agar paket tidak keliru mengganti seluruh data.
+- Regresi unit, API dan antarmuka impor ditambahkan.
+
 ## 1.5.0 — perbaikan data dan alur hafalan (1 November 2026)
 - Validasi tipe data, tanggal/jam, rentang ayat, preferensi, indikator dan sesi sebelum penyimpanan/restore.
 - ID pada option HTML di-escape; kegagalan render saat memuat data menampilkan jalur backup/pemulihan.

@@ -5,6 +5,7 @@ from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from http.cookies import SimpleCookie
 from urllib.parse import urlsplit
 from media_store import MediaMixin, setup as setup_media
+from data_transfer import merge_import, unpack
 
 ROOT = Path(__file__).parent
 DATA = Path(os.environ.get('DATA_DIR', str(ROOT / 'data')))
@@ -128,6 +129,8 @@ class Handler(MediaMixin, BaseHTTPRequestHandler):
         if path.startswith('/api/'):
             _, session = self.session()
             if not session: return self.reply(401, {'error': 'Silakan masuk.'})
+            if path == '/api/import/templates':
+                return self.reply(200, json.loads((ROOT / 'templates' / 'catalog.json').read_text()))
             if path == '/api/state':
                 with connect() as db: row = db.execute('SELECT revision,body FROM state WHERE id=1').fetchone()
                 return self.reply(200, {'revision': row[0], 'data': json.loads(row[1]), 'csrf': session['csrf']})
@@ -135,7 +138,7 @@ class Handler(MediaMixin, BaseHTTPRequestHandler):
                 with connect() as db: rows = db.execute('SELECT revision,created FROM history ORDER BY revision DESC LIMIT 30').fetchall()
                 return self.reply(200, {'history': [{'revision': r, 'created': d} for r,d in rows]})
             return self.reply(404, {'error': 'Tidak ditemukan.'})
-        files = {'/': ('index.html', 'text/html; charset=utf-8'), '/consolidated.js': ('consolidated.js', 'text/javascript; charset=utf-8'), '/recordings.js': ('recordings.js', 'text/javascript; charset=utf-8'), '/quran-meta.json': ('quran-meta.json', 'application/json; charset=utf-8'), '/wellbeing.js': ('wellbeing.js', 'text/javascript; charset=utf-8'), '/hifz.js': ('hifz.js', 'text/javascript; charset=utf-8'), '/features.js': ('features.js', 'text/javascript; charset=utf-8'), '/app.js': ('app.js', 'text/javascript; charset=utf-8'), '/style.css': ('style.css', 'text/css; charset=utf-8'), '/manifest.json': ('manifest.json', 'application/manifest+json'), '/icon.svg': ('icon.svg', 'image/svg+xml')}
+        files = {'/transfer.js': ('transfer.js', 'text/javascript; charset=utf-8'), '/': ('index.html', 'text/html; charset=utf-8'), '/consolidated.js': ('consolidated.js', 'text/javascript; charset=utf-8'), '/recordings.js': ('recordings.js', 'text/javascript; charset=utf-8'), '/quran-meta.json': ('quran-meta.json', 'application/json; charset=utf-8'), '/wellbeing.js': ('wellbeing.js', 'text/javascript; charset=utf-8'), '/hifz.js': ('hifz.js', 'text/javascript; charset=utf-8'), '/features.js': ('features.js', 'text/javascript; charset=utf-8'), '/app.js': ('app.js', 'text/javascript; charset=utf-8'), '/style.css': ('style.css', 'text/css; charset=utf-8'), '/manifest.json': ('manifest.json', 'application/manifest+json'), '/icon.svg': ('icon.svg', 'image/svg+xml')}
         if path not in files: return self.reply(404, {'error': 'Tidak ditemukan.'})
         filename, mime = files[path]
         content = (ROOT / 'static' / filename).read_bytes()
@@ -176,6 +179,25 @@ class Handler(MediaMixin, BaseHTTPRequestHandler):
             if path == '/api/logout':
                 with LOCK: SESSIONS.pop(token, None)
                 return self.reply(200, {'ok':True}, 'lifeos=; Path=/; Max-Age=0; HttpOnly; SameSite=Strict')
+            if path in ['/api/import/preview', '/api/import/apply']:
+                package = obj.get('package')
+                incoming = unpack(package, set(KINDS))
+                # Validate the file itself, including skipped records, before merging.
+                validate({k: incoming.get(k, []) for k in KINDS})
+                selected = obj.get('selected')
+                with connect() as db:
+                    if path.endswith('/apply'): db.execute('BEGIN IMMEDIATE')
+                    rev, old = db.execute('SELECT revision,body FROM state WHERE id=1').fetchone()
+                    if type(obj.get('revision')) is not int or obj['revision'] != rev:
+                        return self.reply(409, {'error': 'Data berubah sejak pratinjau. Muat ulang data lalu buat pratinjau impor lagi.'})
+                    merged, report = merge_import(json.loads(old), package, selected)
+                    validate(merged)
+                    if path.endswith('/apply') and report['added']:
+                        db.execute('INSERT INTO history(revision,body) VALUES(?,?)', (rev,old))
+                        db.execute('DELETE FROM history WHERE revision < ?', (rev-29,))
+                        db.execute('UPDATE state SET revision=?,body=? WHERE id=1', (rev+1,json.dumps(merged)))
+                        rev += 1
+                return self.reply(200, {'revision': rev, 'report': report})
             if path == '/api/state':
                 obj['data'] = normalize(obj.get('data'))
                 validate(obj.get('data'))

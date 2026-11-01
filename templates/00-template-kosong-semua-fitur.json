@@ -1,0 +1,31 @@
+{
+  "kind": "lifeos-import",
+  "version": "1.0",
+  "purpose": "blank",
+  "name": "Template kosong seluruh jenis data",
+  "data": {
+    "inbox": [],
+    "tasks": [],
+    "projects": [],
+    "notes": [],
+    "events": [],
+    "sessions": [],
+    "reviews": [],
+    "areas": [],
+    "goals": [],
+    "quran": [],
+    "quranSessions": [],
+    "plans": [],
+    "preferences": [],
+    "quranUnits": [],
+    "quranUnitSessions": [],
+    "quranChecks": [],
+    "learning": [],
+    "practiceLogs": [],
+    "dayPlans": [],
+    "metricLogs": [],
+    "routines": [],
+    "routineLogs": [],
+    "timeEntries": []
+  }
+}

@@ -1,0 +1,295 @@
+{
+  "kind": "lifeos-import",
+  "version": "1.0",
+  "purpose": "example",
+  "name": "CONTOH FIKTIF — Seluruh jenis data",
+  "data": {
+    "inbox": [
+      {
+        "id": "demo-inbox",
+        "title": "CONTOH FIKTIF — Ide yang belum diurai",
+        "body": "Tulis pikiran mentah di sini."
+      }
+    ],
+    "tasks": [
+      {
+        "id": "demo-task",
+        "title": "CONTOH FIKTIF — Tulis bahan latihan",
+        "project": "demo-project",
+        "status": "todo",
+        "priority": "normal",
+        "estimate": "25",
+        "due": "",
+        "repeat": "none",
+        "result": "Bahan contoh tersedia.",
+        "parent": ""
+      }
+    ],
+    "projects": [
+      {
+        "id": "demo-project",
+        "title": "CONTOH FIKTIF — Menyiapkan latihan",
+        "body": "Selesai ketika bahan latihan tersedia.",
+        "area": "demo-area",
+        "goal": "demo-goal"
+      }
+    ],
+    "notes": [
+      {
+        "id": "demo-note",
+        "title": "CONTOH FIKTIF — Referensi latihan",
+        "body": "# Informasi\nIsi catatan di sini.",
+        "project": "demo-project",
+        "folder": "Contoh",
+        "tags": "contoh,fiktif"
+      }
+    ],
+    "events": [
+      {
+        "id": "demo-event",
+        "title": "CONTOH FIKTIF — Jadwal latihan",
+        "date": "2000-01-01",
+        "time": "09:00",
+        "until": "09:30",
+        "task": "demo-task",
+        "category": "Belajar"
+      }
+    ],
+    "sessions": [
+      {
+        "id": "demo-focus",
+        "task": "demo-task",
+        "start": 946684800000,
+        "end": 946686300000,
+        "duration": 25,
+        "day": "2000-01-01",
+        "energy": "3",
+        "distraction": "CONTOH FIKTIF — bukan sesi nyata"
+      }
+    ],
+    "reviews": [
+      {
+        "id": "demo-review",
+        "type": "Harian",
+        "date": "2000-01-01",
+        "good": "CONTOH FIKTIF — hasil latihan",
+        "lesson": "Pelajaran contoh",
+        "next": "Tindakan contoh",
+        "feeling": "Catatan contoh",
+        "reduce": "Yang dikurangi",
+        "recovery": "Ruang istirahat"
+      }
+    ],
+    "areas": [
+      {
+        "id": "demo-area",
+        "title": "CONTOH FIKTIF — Area belajar",
+        "body": "Hanya contoh bentuk kolom; bukan data pribadi."
+      }
+    ],
+    "goals": [
+      {
+        "id": "demo-goal",
+        "title": "CONTOH FIKTIF — Memperbaiki hasil latihan",
+        "body": "Contoh fiktif, ubah sebelum digunakan.",
+        "area": "demo-area",
+        "due": "",
+        "metric": "Hasil latihan",
+        "unit": "poin",
+        "baseline": "Belum diketahui",
+        "target": "Tentukan setelah pengukuran awal",
+        "period": "per evaluasi",
+        "source": "Catatan latihan contoh",
+        "measurementVersion": 1,
+        "indicators": [
+          {
+            "id": "demo-indicator",
+            "title": "CONTOH FIKTIF — Nilai latihan",
+            "unit": "poin",
+            "baseline": "Belum diketahui",
+            "target": "Tentukan setelah pengukuran awal",
+            "period": "per evaluasi",
+            "source": "Lembar latihan contoh",
+            "measurementVersion": 1
+          }
+        ]
+      }
+    ],
+    "quran": [
+      {
+        "id": "101:1",
+        "surah": 101,
+        "ayah": 1,
+        "status": "practiced",
+        "teacher": "",
+        "date": "2000-01-01",
+        "note": "CONTOH FIKTIF — bukan penilaian hafalan nyata"
+      }
+    ],
+    "quranSessions": [
+      {
+        "id": "demo-qsession",
+        "date": "2000-01-01",
+        "minutes": 20,
+        "surah": 101,
+        "from": 1,
+        "to": 1,
+        "mode": "Murajaah saja",
+        "status": "practiced",
+        "teacher": "",
+        "note": "CONTOH FIKTIF — bukan sesi nyata",
+        "created": 946684800000
+      }
+    ],
+    "plans": [
+      {
+        "id": "demo-plan",
+        "source": "demo-inbox",
+        "idea": "CONTOH FIKTIF — Menyiapkan latihan",
+        "step": 0,
+        "minutes": 25,
+        "capacity": 120,
+        "area": "demo-area",
+        "applied": false
+      }
+    ],
+    "preferences": [
+      {
+        "id": "pomodoro",
+        "enabled": false,
+        "short": 5,
+        "long": 15,
+        "rounds": 4
+      }
+    ],
+    "quranUnits": [
+      {
+        "id": "29:562:1",
+        "juz": 29,
+        "status": "practiced",
+        "teacher": "",
+        "date": "2000-01-01",
+        "note": "CONTOH FIKTIF — bukan penilaian nyata"
+      }
+    ],
+    "quranUnitSessions": [
+      {
+        "id": "demo-usession",
+        "sessionVersion": 2,
+        "juz": 29,
+        "units": [
+          "29:562:1"
+        ],
+        "date": "2000-01-01",
+        "minutes": 20,
+        "load": "sesuai tahap",
+        "status": "practiced",
+        "connection": "not_checked",
+        "teacher": "",
+        "note": "CONTOH FIKTIF — bukan sesi nyata",
+        "created": 946684800000
+      }
+    ],
+    "quranChecks": [
+      {
+        "id": "demo-check",
+        "juz": 30,
+        "date": "2000-01-01",
+        "kind": "Penjagaan setelah jeda",
+        "score0": "belum",
+        "score1": "belum",
+        "score2": "belum",
+        "score3": "belum",
+        "score4": "belum",
+        "decision": "Kuatkan dahulu",
+        "assessor": "",
+        "note": "CONTOH FIKTIF — bukan pemeriksaan nyata",
+        "nextReview": ""
+      }
+    ],
+    "learning": [
+      {
+        "id": "demo-learning",
+        "title": "CONTOH FIKTIF — Pelajaran latihan",
+        "source": "Bahan contoh",
+        "insight": "Hal yang dipahami",
+        "exercise": "Latihan yang akan dicoba",
+        "evidence": "Tanda hasil dapat diperiksa",
+        "area": "demo-area",
+        "project": "demo-project",
+        "nextReview": ""
+      }
+    ],
+    "practiceLogs": [
+      {
+        "id": "demo-practice",
+        "learning": "demo-learning",
+        "date": "2000-01-01",
+        "action": "CONTOH FIKTIF — tindakan latihan",
+        "result": "Hasil contoh",
+        "lesson": "Perbaikan contoh",
+        "nextReview": ""
+      }
+    ],
+    "dayPlans": [
+      {
+        "id": "2000-01-01",
+        "date": "2000-01-01",
+        "work": 60,
+        "rest": 540,
+        "contemplation": 15,
+        "quran": 20,
+        "fixed": 120,
+        "buffer": 30
+      }
+    ],
+    "metricLogs": [
+      {
+        "id": "demo-metric",
+        "goal": "demo-goal",
+        "indicator": "demo-indicator",
+        "date": "2000-01-01",
+        "value": 1,
+        "note": "CONTOH FIKTIF — bukan angka hasil nyata",
+        "created": 946684800000
+      }
+    ],
+    "routines": [
+      {
+        "id": "demo-routine",
+        "title": "CONTOH FIKTIF — Latihan berkala",
+        "kind": "Belajar",
+        "goal": "demo-goal",
+        "days": [
+          1
+        ],
+        "start": "2000-01-01",
+        "time": "",
+        "minutes": 20,
+        "target": "Latihan contoh",
+        "active": false
+      }
+    ],
+    "routineLogs": [
+      {
+        "id": "demo-routine:2000-01-01",
+        "routine": "demo-routine",
+        "date": "2000-01-01",
+        "status": "skip",
+        "note": "CONTOH FIKTIF — bukan catatan nyata"
+      }
+    ],
+    "timeEntries": [
+      {
+        "id": "demo-time",
+        "title": "CONTOH FIKTIF — Waktu latihan",
+        "date": "2000-01-01",
+        "minutes": 15,
+        "category": "Belajar",
+        "task": "demo-task",
+        "area": "demo-area",
+        "note": "CONTOH FIKTIF — bukan waktu nyata"
+      }
+    ]
+  }
+}

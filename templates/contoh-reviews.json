@@ -1,0 +1,21 @@
+{
+  "kind": "lifeos-import",
+  "version": "1.0",
+  "purpose": "example",
+  "name": "CONTOH FIKTIF — Review",
+  "data": {
+    "reviews": [
+      {
+        "id": "demo-review",
+        "type": "Harian",
+        "date": "2000-01-01",
+        "good": "CONTOH FIKTIF — hasil latihan",
+        "lesson": "Pelajaran contoh",
+        "next": "Tindakan contoh",
+        "feeling": "Catatan contoh",
+        "reduce": "Yang dikurangi",
+        "recovery": "Ruang istirahat"
+      }
+    ]
+  }
+}

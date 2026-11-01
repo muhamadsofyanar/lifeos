@@ -1,0 +1,43 @@
+{
+  "kind": "lifeos-import",
+  "version": "1.0",
+  "purpose": "example",
+  "name": "CONTOH FIKTIF — Goal / Tujuan",
+  "data": {
+    "areas": [
+      {
+        "id": "demo-area",
+        "title": "CONTOH FIKTIF — Area belajar",
+        "body": "Hanya contoh bentuk kolom; bukan data pribadi."
+      }
+    ],
+    "goals": [
+      {
+        "id": "demo-goal",
+        "title": "CONTOH FIKTIF — Memperbaiki hasil latihan",
+        "body": "Contoh fiktif, ubah sebelum digunakan.",
+        "area": "demo-area",
+        "due": "",
+        "metric": "Hasil latihan",
+        "unit": "poin",
+        "baseline": "Belum diketahui",
+        "target": "Tentukan setelah pengukuran awal",
+        "period": "per evaluasi",
+        "source": "Catatan latihan contoh",
+        "measurementVersion": 1,
+        "indicators": [
+          {
+            "id": "demo-indicator",
+            "title": "CONTOH FIKTIF — Nilai latihan",
+            "unit": "poin",
+            "baseline": "Belum diketahui",
+            "target": "Tentukan setelah pengukuran awal",
+            "period": "per evaluasi",
+            "source": "Lembar latihan contoh",
+            "measurementVersion": 1
+          }
+        ]
+      }
+    ]
+  }
+}

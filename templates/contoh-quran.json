@@ -1,0 +1,19 @@
+{
+  "kind": "lifeos-import",
+  "version": "1.0",
+  "purpose": "example",
+  "name": "CONTOH FIKTIF — Mutabaah Juz 30",
+  "data": {
+    "quran": [
+      {
+        "id": "101:1",
+        "surah": 101,
+        "ayah": 1,
+        "status": "practiced",
+        "teacher": "",
+        "date": "2000-01-01",
+        "note": "CONTOH FIKTIF — bukan penilaian hafalan nyata"
+      }
+    ]
+  }
+}

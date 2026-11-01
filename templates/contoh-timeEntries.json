@@ -1,0 +1,78 @@
+{
+  "kind": "lifeos-import",
+  "version": "1.0",
+  "purpose": "example",
+  "name": "CONTOH FIKTIF — Catatan waktu manual",
+  "data": {
+    "tasks": [
+      {
+        "id": "demo-task",
+        "title": "CONTOH FIKTIF — Tulis bahan latihan",
+        "project": "demo-project",
+        "status": "todo",
+        "priority": "normal",
+        "estimate": "25",
+        "due": "",
+        "repeat": "none",
+        "result": "Bahan contoh tersedia.",
+        "parent": ""
+      }
+    ],
+    "projects": [
+      {
+        "id": "demo-project",
+        "title": "CONTOH FIKTIF — Menyiapkan latihan",
+        "body": "Selesai ketika bahan latihan tersedia.",
+        "area": "demo-area",
+        "goal": "demo-goal"
+      }
+    ],
+    "areas": [
+      {
+        "id": "demo-area",
+        "title": "CONTOH FIKTIF — Area belajar",
+        "body": "Hanya contoh bentuk kolom; bukan data pribadi."
+      }
+    ],
+    "goals": [
+      {
+        "id": "demo-goal",
+        "title": "CONTOH FIKTIF — Memperbaiki hasil latihan",
+        "body": "Contoh fiktif, ubah sebelum digunakan.",
+        "area": "demo-area",
+        "due": "",
+        "metric": "Hasil latihan",
+        "unit": "poin",
+        "baseline": "Belum diketahui",
+        "target": "Tentukan setelah pengukuran awal",
+        "period": "per evaluasi",
+        "source": "Catatan latihan contoh",
+        "measurementVersion": 1,
+        "indicators": [
+          {
+            "id": "demo-indicator",
+            "title": "CONTOH FIKTIF — Nilai latihan",
+            "unit": "poin",
+            "baseline": "Belum diketahui",
+            "target": "Tentukan setelah pengukuran awal",
+            "period": "per evaluasi",
+            "source": "Lembar latihan contoh",
+            "measurementVersion": 1
+          }
+        ]
+      }
+    ],
+    "timeEntries": [
+      {
+        "id": "demo-time",
+        "title": "CONTOH FIKTIF — Waktu latihan",
+        "date": "2000-01-01",
+        "minutes": 15,
+        "category": "Belajar",
+        "task": "demo-task",
+        "area": "demo-area",
+        "note": "CONTOH FIKTIF — bukan waktu nyata"
+      }
+    ]
+  }
+}

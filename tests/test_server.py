@@ -26,7 +26,7 @@ class AppTest(unittest.TestCase):
                 return r.status,json.load(r)
         except urllib.error.HTTPError as e:return e.code,json.load(e)
     def test_workflow(self):
-        for filename in ['app.js','features.js','hifz.js','wellbeing.js','recordings.js','quran-meta.json','consolidated.js']:
+        for filename in ['app.js','features.js','hifz.js','wellbeing.js','recordings.js','quran-meta.json','consolidated.js','transfer.js']:
             with urllib.request.urlopen(f'http://127.0.0.1:{self.port}/{filename}') as asset:
                 self.assertEqual(asset.status,200)
                 self.assertGreater(len(asset.read()),100)

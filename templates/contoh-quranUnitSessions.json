@@ -1,0 +1,26 @@
+{
+  "kind": "lifeos-import",
+  "version": "1.0",
+  "purpose": "example",
+  "name": "CONTOH FIKTIF — Sesi unit",
+  "data": {
+    "quranUnitSessions": [
+      {
+        "id": "demo-usession",
+        "sessionVersion": 2,
+        "juz": 29,
+        "units": [
+          "29:562:1"
+        ],
+        "date": "2000-01-01",
+        "minutes": 20,
+        "load": "sesuai tahap",
+        "status": "practiced",
+        "connection": "not_checked",
+        "teacher": "",
+        "note": "CONTOH FIKTIF — bukan sesi nyata",
+        "created": 946684800000
+      }
+    ]
+  }
+}

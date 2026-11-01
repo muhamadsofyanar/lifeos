@@ -1,0 +1,34 @@
+{
+  "kind": "lifeos-import",
+  "version": "1.0",
+  "purpose": "example",
+  "name": "CONTOH FIKTIF — Idea Planner",
+  "data": {
+    "inbox": [
+      {
+        "id": "demo-inbox",
+        "title": "CONTOH FIKTIF — Ide yang belum diurai",
+        "body": "Tulis pikiran mentah di sini."
+      }
+    ],
+    "areas": [
+      {
+        "id": "demo-area",
+        "title": "CONTOH FIKTIF — Area belajar",
+        "body": "Hanya contoh bentuk kolom; bukan data pribadi."
+      }
+    ],
+    "plans": [
+      {
+        "id": "demo-plan",
+        "source": "demo-inbox",
+        "idea": "CONTOH FIKTIF — Menyiapkan latihan",
+        "step": 0,
+        "minutes": 25,
+        "capacity": 120,
+        "area": "demo-area",
+        "applied": false
+      }
+    ]
+  }
+}

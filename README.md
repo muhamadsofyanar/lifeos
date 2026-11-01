@@ -1,8 +1,8 @@
-# LifeOS v1.5
+# LifeOS v1.6
 
-**Sudah deploy versi sebelumnya? Ikuti `UPDATE-v1.5.md`. Pertahankan volume `/data` yang sekarang.**
+**Sudah deploy versi sebelumnya? Ikuti `UPDATE-v1.6.md`. Pertahankan volume `/data` yang sekarang.**
 
-Versi 1.5 memperbaiki validasi backup, keamanan atribut HTML, tanggal selesai tugas, pemulihan metadata audio, riwayat/koreksi sesi hafalan, penilaian sambungan dua halaman, dan definisi pengukuran Goal. Seluruh fitur v1.4 tetap tersedia. Lihat `LAPORAN-PERBAIKAN-v1.5.md` dan `CHANGELOG.md`.
+Versi 1.6 menambahkan impor gabung dan template seluruh jenis data. Versi 1.5 memperbaiki validasi backup, keamanan atribut HTML, tanggal selesai tugas, pemulihan metadata audio, riwayat/koreksi sesi hafalan, penilaian sambungan dua halaman, dan definisi pengukuran Goal. Seluruh fitur v1.4 tetap tersedia. Lihat `LAPORAN-PERBAIKAN-v1.5.md` dan `CHANGELOG.md`.
 
 Aplikasi produktivitas pribadi single-user dalam bahasa Indonesia. Siap dijalankan sebagai satu container Docker di Coolify. Tidak memerlukan layanan eksternal, CDN, API berbayar, atau instalasi package saat startup.
 
@@ -112,6 +112,7 @@ node tests/test_frontend.cjs
 node tests/test_recording_frontend.cjs
 node tests/test_consolidated.cjs
 node tests/test_repairs.cjs
+node tests/test_transfer_ui.cjs
 ```
 
 Integration test memeriksa autentikasi, CSRF, penyimpanan/readback, konflik revisi, penolakan timer ganda, history, restore state dan logout. Docker image dan deployment Coolify perlu diverifikasi di server tujuan.
@@ -137,3 +138,17 @@ ROADMAP.md adalah daftar status tunggal. Versi ZIP tidak sama dengan tahap PRD. 
 ## Perilaku data v1.5
 
 Backup JSON tetap versi 4. Koleksi dan ID lama dipertahankan. Definisi pengukuran baru memakai `measurementVersion: 1`; sesi unit yang baru atau dikoreksi memakai `sessionVersion: 2`. Sesi lama tidak otomatis mendapat nilai sambungan atau tanggal penyelesaian yang belum pernah dicatat. Validasi baru menolak backup dengan tipe atau nilai yang tidak valid sebelum mengganti data.
+
+## Impor gabung & template v1.6
+
+Buka **Settings → Impor data & template → Buka impor & template**. Pilih paket JSON, pilih jenis data, buat pratinjau, lalu simpan hasil impor. Template kosong, contoh fiktif, dan panduan kolom dapat diunduh dari dialog tersebut.
+
+Impor gabung menambahkan data dan mempertahankan data lama. ID yang sama dilewati. Nama/kunci yang cocok dipakai kembali sesuai cakupan: Goal dalam Area, Project dalam Area dan Goal, Task/Note dalam Project. Hubungan dalam paket dipetakan ke ID data lama yang cocok. Nama yang berbeda dapat menghasilkan baris baru, sehingga pratinjau harus diperiksa. Nama lama yang ambigu memerlukan ID tujuan yang tepat.
+
+Backup JSON v1–4 dapat dipilih untuk digabung, dengan pemeriksaan struktur dan referensi. Referensi yang tidak tersedia harus dilengkapi atau diperbaiki; impor tidak menghapusnya secara diam-diam. Impor ulang paket yang sama tidak menambah duplikat atau revisi baru jika tidak ada penambahan.
+
+Format paket impor memakai `kind: lifeos-import` dan `version: "1.0"` (teks). Restore backup tetap memakai versi angka. Pemisahan ini membuat paket impor ditolak oleh restore versi lama.
+
+Paket pribadi hanya berisi rencana: 6 Area, 14 Goal, 14 Project, 42 Task berstatus todo, dan 15 Note. Tidak ada transaksi keuangan, jadwal, deadline, estimasi durasi, setoran hafalan, sesi, atau hasil aktual yang dikarang. Angka tujuan yang belum jelas tetap berupa uraian rancangan.
+
+Contoh generik berlabel FIKTIF dapat berisi riwayat untuk menjelaskan bentuk kolom. Ubah berdasarkan kejadian nyata sebelum digunakan. JSON tidak memuat file audio; gunakan ZIP audio/unggahan perekam. Today, Analytics, dan pencarian merupakan tampilan dari data yang diimpor.

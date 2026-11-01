@@ -1,12 +1,12 @@
 # Roadmap LifeOS — sumber status tunggal
 
-Status paket source: **v1.5.0**. Nomor paket berbeda dari tahap MVP/V2/V3/V4 pada PRD. Deployment yang benar-benar aktif harus diperiksa melalui footer aplikasi dan Coolify; source siap tidak berarti sudah terpasang.
+Status paket source: **v1.6.0**. Nomor paket berbeda dari tahap MVP/V2/V3/V4 pada PRD. Deployment yang benar-benar aktif harus diperiksa melalui footer aplikasi dan Coolify; source siap tidak berarti sudah terpasang.
 
 ## Arah produk
 
 Second brain pribadi untuk menghubungkan ide, ilmu, hasil, ukuran kemajuan, proses, tugas, waktu dan review. Mendukung bisnis, kuliah, masjid/organisasi, hafalan 30 juz dan ruang pemulihan. Tujuan penggunaan: langkah lebih jelas, tanggung jawab tertata, ada ruang kerja/ibadah/istirahat/kontemplasi. Aplikasi tidak menjamin hasil bisnis, keahlian atau kebahagiaan dari jumlah centang.
 
-## Tersedia pada v1.5
+## Tersedia pada v1.6
 
 | Kelompok | Cakupan | Batas |
 |---|---|---|

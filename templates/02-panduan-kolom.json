@@ -1,0 +1,686 @@
+{
+  "format": {
+    "kind": "lifeos-import",
+    "version": "1.0",
+    "data": "Objek berisi satu atau beberapa array jenis data."
+  },
+  "rules": [
+    "ID harus unik dalam setiap jenis data dan stabil untuk impor ulang.",
+    "Tanggal memakai YYYY-MM-DD; jam HH:MM.",
+    "Tidak ada data lama yang ditimpa. ID atau judul/kunci yang cocok akan dilewati.",
+    "Judul Goal dicocokkan dalam Area yang sama; judul Project dalam Area dan Goal yang sama; Task/Note dalam Project yang sama.",
+    "Relasi memakai ID, bukan nama. Sertakan dependensi yang belum ada di aplikasi.",
+    "Sesi Focus yang diimpor harus selesai; impor tidak memulai timer.",
+    "Angka baseline, target, jadwal, dan riwayat harus diisi berdasarkan data pengguna."
+  ],
+  "collections": {
+    "inbox": {
+      "label": "Inbox",
+      "required_for_template": [
+        "id",
+        "title"
+      ],
+      "optional": [
+        "body"
+      ],
+      "dependencies": [],
+      "example": {
+        "id": "demo-inbox",
+        "title": "CONTOH FIKTIF — Ide yang belum diurai",
+        "body": "Tulis pikiran mentah di sini."
+      }
+    },
+    "tasks": {
+      "label": "Tasks",
+      "required_for_template": [
+        "id",
+        "title",
+        "status"
+      ],
+      "optional": [
+        "project",
+        "result",
+        "priority",
+        "estimate",
+        "due",
+        "repeat",
+        "parent",
+        "learning"
+      ],
+      "dependencies": [
+        "projects"
+      ],
+      "example": {
+        "id": "demo-task",
+        "title": "CONTOH FIKTIF — Tulis bahan latihan",
+        "project": "demo-project",
+        "status": "todo",
+        "priority": "normal",
+        "estimate": "25",
+        "due": "",
+        "repeat": "none",
+        "result": "Bahan contoh tersedia.",
+        "parent": ""
+      }
+    },
+    "projects": {
+      "label": "Projects",
+      "required_for_template": [
+        "id",
+        "title"
+      ],
+      "optional": [
+        "body",
+        "area",
+        "goal"
+      ],
+      "dependencies": [
+        "areas",
+        "goals"
+      ],
+      "example": {
+        "id": "demo-project",
+        "title": "CONTOH FIKTIF — Menyiapkan latihan",
+        "body": "Selesai ketika bahan latihan tersedia.",
+        "area": "demo-area",
+        "goal": "demo-goal"
+      }
+    },
+    "notes": {
+      "label": "Notes",
+      "required_for_template": [
+        "id",
+        "title"
+      ],
+      "optional": [
+        "body",
+        "project",
+        "folder",
+        "tags"
+      ],
+      "dependencies": [
+        "projects"
+      ],
+      "example": {
+        "id": "demo-note",
+        "title": "CONTOH FIKTIF — Referensi latihan",
+        "body": "# Informasi\nIsi catatan di sini.",
+        "project": "demo-project",
+        "folder": "Contoh",
+        "tags": "contoh,fiktif"
+      }
+    },
+    "events": {
+      "label": "Calendar",
+      "required_for_template": [
+        "id",
+        "title",
+        "date",
+        "time",
+        "until"
+      ],
+      "optional": [
+        "task",
+        "category"
+      ],
+      "dependencies": [
+        "tasks"
+      ],
+      "example": {
+        "id": "demo-event",
+        "title": "CONTOH FIKTIF — Jadwal latihan",
+        "date": "2000-01-01",
+        "time": "09:00",
+        "until": "09:30",
+        "task": "demo-task",
+        "category": "Belajar"
+      }
+    },
+    "sessions": {
+      "label": "Riwayat Focus",
+      "required_for_template": [
+        "id",
+        "start",
+        "end"
+      ],
+      "optional": [
+        "task",
+        "duration",
+        "day",
+        "energy",
+        "distraction"
+      ],
+      "dependencies": [
+        "tasks"
+      ],
+      "example": {
+        "id": "demo-focus",
+        "task": "demo-task",
+        "start": 946684800000,
+        "end": 946686300000,
+        "duration": 25,
+        "day": "2000-01-01",
+        "energy": "3",
+        "distraction": "CONTOH FIKTIF — bukan sesi nyata"
+      }
+    },
+    "reviews": {
+      "label": "Review",
+      "required_for_template": [
+        "id",
+        "type",
+        "date"
+      ],
+      "optional": [
+        "good",
+        "lesson",
+        "next",
+        "feeling",
+        "reduce",
+        "recovery"
+      ],
+      "dependencies": [],
+      "example": {
+        "id": "demo-review",
+        "type": "Harian",
+        "date": "2000-01-01",
+        "good": "CONTOH FIKTIF — hasil latihan",
+        "lesson": "Pelajaran contoh",
+        "next": "Tindakan contoh",
+        "feeling": "Catatan contoh",
+        "reduce": "Yang dikurangi",
+        "recovery": "Ruang istirahat"
+      }
+    },
+    "areas": {
+      "label": "Area kehidupan",
+      "required_for_template": [
+        "id",
+        "title"
+      ],
+      "optional": [
+        "body"
+      ],
+      "dependencies": [],
+      "example": {
+        "id": "demo-area",
+        "title": "CONTOH FIKTIF — Area belajar",
+        "body": "Hanya contoh bentuk kolom; bukan data pribadi."
+      }
+    },
+    "goals": {
+      "label": "Goal / Tujuan",
+      "required_for_template": [
+        "id",
+        "title"
+      ],
+      "optional": [
+        "body",
+        "area",
+        "due",
+        "metric",
+        "unit",
+        "baseline",
+        "target",
+        "period",
+        "source",
+        "measurementVersion",
+        "indicators"
+      ],
+      "dependencies": [
+        "areas"
+      ],
+      "example": {
+        "id": "demo-goal",
+        "title": "CONTOH FIKTIF — Memperbaiki hasil latihan",
+        "body": "Contoh fiktif, ubah sebelum digunakan.",
+        "area": "demo-area",
+        "due": "",
+        "metric": "Hasil latihan",
+        "unit": "poin",
+        "baseline": "Belum diketahui",
+        "target": "Tentukan setelah pengukuran awal",
+        "period": "per evaluasi",
+        "source": "Catatan latihan contoh",
+        "measurementVersion": 1,
+        "indicators": [
+          {
+            "id": "demo-indicator",
+            "title": "CONTOH FIKTIF — Nilai latihan",
+            "unit": "poin",
+            "baseline": "Belum diketahui",
+            "target": "Tentukan setelah pengukuran awal",
+            "period": "per evaluasi",
+            "source": "Lembar latihan contoh",
+            "measurementVersion": 1
+          }
+        ]
+      }
+    },
+    "quran": {
+      "label": "Mutabaah Juz 30",
+      "required_for_template": [
+        "id",
+        "surah",
+        "ayah",
+        "status"
+      ],
+      "optional": [
+        "teacher",
+        "date",
+        "note"
+      ],
+      "dependencies": [],
+      "example": {
+        "id": "101:1",
+        "surah": 101,
+        "ayah": 1,
+        "status": "practiced",
+        "teacher": "",
+        "date": "2000-01-01",
+        "note": "CONTOH FIKTIF — bukan penilaian hafalan nyata"
+      }
+    },
+    "quranSessions": {
+      "label": "Sesi Juz 30",
+      "required_for_template": [
+        "id",
+        "minutes",
+        "date",
+        "surah",
+        "from",
+        "to",
+        "status"
+      ],
+      "optional": [
+        "mode",
+        "teacher",
+        "note",
+        "created"
+      ],
+      "dependencies": [],
+      "example": {
+        "id": "demo-qsession",
+        "date": "2000-01-01",
+        "minutes": 20,
+        "surah": 101,
+        "from": 1,
+        "to": 1,
+        "mode": "Murajaah saja",
+        "status": "practiced",
+        "teacher": "",
+        "note": "CONTOH FIKTIF — bukan sesi nyata",
+        "created": 946684800000
+      }
+    },
+    "plans": {
+      "label": "Idea Planner",
+      "required_for_template": [
+        "id",
+        "idea",
+        "step"
+      ],
+      "optional": [
+        "source",
+        "minutes",
+        "capacity",
+        "area",
+        "applied",
+        "outcome",
+        "why",
+        "due",
+        "metric",
+        "unit",
+        "baseline",
+        "target",
+        "period",
+        "measurementSource",
+        "process",
+        "frequency",
+        "steps",
+        "estimates",
+        "reviewDate"
+      ],
+      "dependencies": [
+        "areas",
+        "inbox"
+      ],
+      "example": {
+        "id": "demo-plan",
+        "source": "demo-inbox",
+        "idea": "CONTOH FIKTIF — Menyiapkan latihan",
+        "step": 0,
+        "minutes": 25,
+        "capacity": 120,
+        "area": "demo-area",
+        "applied": false
+      }
+    },
+    "preferences": {
+      "label": "Pengaturan",
+      "required_for_template": [
+        "id"
+      ],
+      "optional": [
+        "enabled",
+        "short",
+        "long",
+        "rounds",
+        "minutes",
+        "newMinutes",
+        "time"
+      ],
+      "dependencies": [],
+      "example": {
+        "id": "pomodoro",
+        "enabled": false,
+        "short": 5,
+        "long": 15,
+        "rounds": 4
+      }
+    },
+    "quranUnits": {
+      "label": "Mutabaah unit",
+      "required_for_template": [
+        "id",
+        "juz",
+        "status"
+      ],
+      "optional": [
+        "teacher",
+        "date",
+        "note"
+      ],
+      "dependencies": [],
+      "example": {
+        "id": "29:562:1",
+        "juz": 29,
+        "status": "practiced",
+        "teacher": "",
+        "date": "2000-01-01",
+        "note": "CONTOH FIKTIF — bukan penilaian nyata"
+      }
+    },
+    "quranUnitSessions": {
+      "label": "Sesi unit",
+      "required_for_template": [
+        "id",
+        "sessionVersion",
+        "juz",
+        "units",
+        "minutes",
+        "date",
+        "load",
+        "status",
+        "connection"
+      ],
+      "optional": [
+        "teacher",
+        "note",
+        "created"
+      ],
+      "dependencies": [],
+      "example": {
+        "id": "demo-usession",
+        "sessionVersion": 2,
+        "juz": 29,
+        "units": [
+          "29:562:1"
+        ],
+        "date": "2000-01-01",
+        "minutes": 20,
+        "load": "sesuai tahap",
+        "status": "practiced",
+        "connection": "not_checked",
+        "teacher": "",
+        "note": "CONTOH FIKTIF — bukan sesi nyata",
+        "created": 946684800000
+      }
+    },
+    "quranChecks": {
+      "label": "Evaluasi hafalan",
+      "required_for_template": [
+        "id",
+        "juz",
+        "date"
+      ],
+      "optional": [
+        "kind",
+        "score0",
+        "score1",
+        "score2",
+        "score3",
+        "score4",
+        "decision",
+        "assessor",
+        "note",
+        "nextReview"
+      ],
+      "dependencies": [],
+      "example": {
+        "id": "demo-check",
+        "juz": 30,
+        "date": "2000-01-01",
+        "kind": "Penjagaan setelah jeda",
+        "score0": "belum",
+        "score1": "belum",
+        "score2": "belum",
+        "score3": "belum",
+        "score4": "belum",
+        "decision": "Kuatkan dahulu",
+        "assessor": "",
+        "note": "CONTOH FIKTIF — bukan pemeriksaan nyata",
+        "nextReview": ""
+      }
+    },
+    "learning": {
+      "label": "Belajar & Praktik",
+      "required_for_template": [
+        "id",
+        "title",
+        "exercise"
+      ],
+      "optional": [
+        "source",
+        "insight",
+        "evidence",
+        "area",
+        "project",
+        "nextReview"
+      ],
+      "dependencies": [
+        "areas",
+        "projects"
+      ],
+      "example": {
+        "id": "demo-learning",
+        "title": "CONTOH FIKTIF — Pelajaran latihan",
+        "source": "Bahan contoh",
+        "insight": "Hal yang dipahami",
+        "exercise": "Latihan yang akan dicoba",
+        "evidence": "Tanda hasil dapat diperiksa",
+        "area": "demo-area",
+        "project": "demo-project",
+        "nextReview": ""
+      }
+    },
+    "practiceLogs": {
+      "label": "Riwayat praktik",
+      "required_for_template": [
+        "id",
+        "learning",
+        "date",
+        "action",
+        "result"
+      ],
+      "optional": [
+        "lesson",
+        "nextReview"
+      ],
+      "dependencies": [
+        "learning"
+      ],
+      "example": {
+        "id": "demo-practice",
+        "learning": "demo-learning",
+        "date": "2000-01-01",
+        "action": "CONTOH FIKTIF — tindakan latihan",
+        "result": "Hasil contoh",
+        "lesson": "Perbaikan contoh",
+        "nextReview": ""
+      }
+    },
+    "dayPlans": {
+      "label": "Anggaran hari",
+      "required_for_template": [
+        "id",
+        "date"
+      ],
+      "optional": [
+        "work",
+        "rest",
+        "contemplation",
+        "quran",
+        "fixed",
+        "buffer"
+      ],
+      "dependencies": [],
+      "example": {
+        "id": "2000-01-01",
+        "date": "2000-01-01",
+        "work": 60,
+        "rest": 540,
+        "contemplation": 15,
+        "quran": 20,
+        "fixed": 120,
+        "buffer": 30
+      }
+    },
+    "metricLogs": {
+      "label": "Angka indikator Goal",
+      "required_for_template": [
+        "id",
+        "goal",
+        "date",
+        "value"
+      ],
+      "optional": [
+        "indicator",
+        "note",
+        "created"
+      ],
+      "dependencies": [
+        "goals"
+      ],
+      "example": {
+        "id": "demo-metric",
+        "goal": "demo-goal",
+        "indicator": "demo-indicator",
+        "date": "2000-01-01",
+        "value": 1,
+        "note": "CONTOH FIKTIF — bukan angka hasil nyata",
+        "created": 946684800000
+      }
+    },
+    "routines": {
+      "label": "Rutinitas",
+      "required_for_template": [
+        "id",
+        "title",
+        "days",
+        "start",
+        "minutes"
+      ],
+      "optional": [
+        "kind",
+        "goal",
+        "time",
+        "target",
+        "active"
+      ],
+      "dependencies": [
+        "goals"
+      ],
+      "example": {
+        "id": "demo-routine",
+        "title": "CONTOH FIKTIF — Latihan berkala",
+        "kind": "Belajar",
+        "goal": "demo-goal",
+        "days": [
+          1
+        ],
+        "start": "2000-01-01",
+        "time": "",
+        "minutes": 20,
+        "target": "Latihan contoh",
+        "active": false
+      }
+    },
+    "routineLogs": {
+      "label": "Catatan rutinitas",
+      "required_for_template": [
+        "id",
+        "routine",
+        "date",
+        "status"
+      ],
+      "optional": [
+        "note"
+      ],
+      "dependencies": [
+        "routines"
+      ],
+      "example": {
+        "id": "demo-routine:2000-01-01",
+        "routine": "demo-routine",
+        "date": "2000-01-01",
+        "status": "skip",
+        "note": "CONTOH FIKTIF — bukan catatan nyata"
+      }
+    },
+    "timeEntries": {
+      "label": "Catatan waktu manual",
+      "required_for_template": [
+        "id",
+        "title",
+        "date",
+        "minutes"
+      ],
+      "optional": [
+        "category",
+        "task",
+        "area",
+        "note"
+      ],
+      "dependencies": [
+        "tasks",
+        "areas"
+      ],
+      "example": {
+        "id": "demo-time",
+        "title": "CONTOH FIKTIF — Waktu latihan",
+        "date": "2000-01-01",
+        "minutes": 15,
+        "category": "Belajar",
+        "task": "demo-task",
+        "area": "demo-area",
+        "note": "CONTOH FIKTIF — bukan waktu nyata"
+      }
+    }
+  },
+  "derived_features": {
+    "Today": "Dihitung dari tugas, bigDate, agenda, rutinitas dan catatan hari. Pilih prioritas melalui bintang setelah impor.",
+    "Analytics": "Dihitung dari data aktivitas dan hasil; tidak memiliki baris impor tersendiri.",
+    "Cari Semua": "Mencari entitas yang diimpor; tidak membutuhkan file tersendiri.",
+    "Panduan": "Konten bantuan aplikasi; tidak memiliki data impor pengguna."
+  },
+  "audio": {
+    "route": "Settings → impor ZIP audio atau unggah melalui perekam",
+    "manifest": {
+      "version": 1,
+      "kind": "lifeos-recordings",
+      "recordings": []
+    },
+    "note": "File audio tidak dapat dimasukkan ke JSON ini. ZIP memuat recordings.json dan file audio yang sebenarnya. Untuk arsip berisi audio, gunakan format hasil ekspor aplikasi."
+  }
+}

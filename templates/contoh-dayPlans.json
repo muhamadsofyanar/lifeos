@@ -1,0 +1,20 @@
+{
+  "kind": "lifeos-import",
+  "version": "1.0",
+  "purpose": "example",
+  "name": "CONTOH FIKTIF — Anggaran hari",
+  "data": {
+    "dayPlans": [
+      {
+        "id": "2000-01-01",
+        "date": "2000-01-01",
+        "work": 60,
+        "rest": 540,
+        "contemplation": 15,
+        "quran": 20,
+        "fixed": 120,
+        "buffer": 30
+      }
+    ]
+  }
+}

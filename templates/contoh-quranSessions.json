@@ -1,0 +1,23 @@
+{
+  "kind": "lifeos-import",
+  "version": "1.0",
+  "purpose": "example",
+  "name": "CONTOH FIKTIF — Sesi Juz 30",
+  "data": {
+    "quranSessions": [
+      {
+        "id": "demo-qsession",
+        "date": "2000-01-01",
+        "minutes": 20,
+        "surah": 101,
+        "from": 1,
+        "to": 1,
+        "mode": "Murajaah saja",
+        "status": "practiced",
+        "teacher": "",
+        "note": "CONTOH FIKTIF — bukan sesi nyata",
+        "created": 946684800000
+      }
+    ]
+  }
+}
