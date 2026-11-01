@@ -1,0 +1,19 @@
+services:
+  lifeos:
+    build: .
+    restart: unless-stopped
+    expose:
+      - "8000"
+    environment:
+      LIFEOS_PASSWORD: ${LIFEOS_PASSWORD:?Set LIFEOS_PASSWORD minimal 12 karakter}
+      COOKIE_SECURE: ${COOKIE_SECURE:-true}
+      DATA_DIR: /data
+    volumes:
+      - lifeos_data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health',timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+volumes:
+  lifeos_data:
