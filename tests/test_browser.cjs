@@ -166,6 +166,34 @@ const playwright = process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
       await page.locator('.session-history').screenshot({path:path.join(out,'history-mobile.png')});
     }
+    // Notes roundtrip, combined filters, full reading and narrow layouts.
+    await page.setViewportSize({width:1440,height:1000});
+    await page.locator('nav [data-id="Notes"]').click();
+    await page.locator('[data-action=new-note]').click();
+    for (const [key,value] of Object.entries({title:'Catatan uji folder',body:'Isi lengkap catatan. '.repeat(100),folder:'IZINHUKUM',tags:'klien, tindak-lanjut'})) {
+      await page.locator(`#editor [name=${key}]`).fill(value);
+    }
+    await page.locator('#editor button.primary').click();
+    await page.locator('#modal').waitFor({state:'hidden'});
+    await page.reload();
+    await page.locator('nav [data-id="Notes"]').click();
+    await page.locator('#notes-folder').selectOption('IZINHUKUM');
+    await page.locator('#notes-tag').selectOption('klien');
+    await page.locator('#search').fill('Catatan uji');
+    assert.equal(await page.locator('.notes-grid .note').count(),1);
+    await page.locator('[data-action=notes-read]').click();
+    assert.ok((await page.locator('.note-reader').innerText()).length>1500);
+    await page.locator('#modal [data-action=close]').first().click();
+    for(const width of [360,390,768,1440]) {
+      await page.setViewportSize({width,height:844});
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,`Notes width ${width}`);
+      if(width<=650){
+        await page.locator('#mobile-menu').click();
+        await page.locator('nav [data-id="Settings"]').click();
+        await page.locator('#mobile-menu').click();
+        await page.locator('nav [data-id="Notes"]').click();
+      }
+    }
     assert.deepEqual(errors, []);
     console.log('Browser checks passed: authentication, rejected backup preserves revision/data, session correction with explicit mutabaah update, S2 connection, task completion/reopening/recurrence, escaped IDs, measurement definition, persistence, 18 pages and responsive history.');
   } finally {

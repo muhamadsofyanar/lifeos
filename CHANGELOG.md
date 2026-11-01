@@ -1,3 +1,12 @@
+# v1.7.2 — Notes dan layar kecil
+
+- Filter folder dan tag yang dapat digabungkan dengan pencarian, hitungan hasil dan reset.
+- Folder/tag berasal dari catatan lama; tanpa migrasi atau impor ulang.
+- Ringkasan kartu, tombol Baca untuk isi lengkap serta backlink.
+- Saran nama folder dan petunjuk tag pada editor dengan area menulis lebih luas.
+- Menu utama pada layar kecil, toolbar membungkus, kartu satu kolom pada lebar menengah, form/modal lebih sesuai viewport.
+- Tambahan pengujian filter, keamanan tampilan dan cakupan aset server.
+
 # Changelog
 
 ## 1.7.1 — batas ayat dan hubungan rekaman (1 November 2026)

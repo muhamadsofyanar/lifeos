@@ -7,3 +7,52 @@
 .session-card{padding:16px 20px}.session-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.session-top h3{margin:0}.session-card p{margin:8px 0;overflow-wrap:anywhere}.session-card .session-mode,.session-history>.muted{font-size:12px}.session-card .session-note{white-space:pre-wrap;color:var(--ink)}.session-card .actions{margin-top:12px}.session-top .pill{font-size:11px}.session-history{max-width:1050px}
 
 .academy-context{border-left:4px solid var(--green)}.academy-context button{margin-right:8px;margin-top:6px}#smart-form p{max-width:65ch}#smart-form .actions{position:sticky;bottom:-28px;background:white;padding:12px 0;border-top:1px solid var(--line)}#smart-form textarea{min-height:110px}#modal li{margin-bottom:12px}#modal a{overflow-wrap:anywhere;color:var(--green)}
+/* v1.7.2: contained layouts, readable notes, and a complete mobile menu. */
+main, #content, .grid>*, .two>*, .kanban>*, .panel, .task, .row>*{min-width:0}
+h2,h3,.task strong,.running,.panel p,.note-meta{overflow-wrap:anywhere}
+input,select,textarea{min-width:0;max-width:100%}
+textarea{resize:vertical}
+.section-title{flex-wrap:wrap}
+.mobile-menu{display:none}
+.notes-intro p{margin-top:0}
+.notes-filters{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap}
+.notes-filters label{flex:1 1 200px;margin:0}
+.notes-filters>button{margin-bottom:0;min-height:44px}
+.notes-count{font-size:13px}
+.note-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.tag-chip{font-size:12px;padding:3px 8px;color:var(--green)}
+.notes-grid{align-items:start}
+.notes-grid .note{margin-bottom:0}
+.note-preview{white-space:pre-line;overflow-wrap:anywhere;font-size:14px}
+.note-project{font-size:12px}
+.note-reader{overflow-wrap:anywhere;line-height:1.8}
+.note-reader h1{font-family:inherit;font-size:26px;letter-spacing:0}
+.note-editor textarea{min-height:260px;line-height:1.7}
+#modal:has(.note-reader),#modal:has(.note-editor){width:min(850px,94vw)}
+dialog{overflow-y:auto;max-height:90dvh}
+@media(max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:650px){
+ aside{padding:14px 18px}
+ .mobile-menu{display:block;width:100%;text-align:left;margin-top:10px;min-height:44px}
+ aside nav{display:none;max-height:55dvh;overflow-y:auto;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+ aside nav.mobile-open{display:grid}
+ aside nav button{white-space:normal;padding:10px;gap:6px;min-width:0;overflow-wrap:anywhere}
+ .toolbar{flex-wrap:wrap;gap:10px}
+ .toolbar input{flex:1 1 100%;max-width:none}
+ .toolbar>button{min-height:44px;flex:1 1 auto}
+ .panel{padding:17px}
+ .notes-filters{gap:10px}
+ .notes-filters label{flex-basis:100%}
+ .notes-filters>button{width:100%}
+ .actions button{min-height:40px}
+ .row{flex-wrap:wrap}
+ .row .pill{white-space:normal}
+ .running{padding:12px;font-size:13px}
+ .stats{grid-template-columns:repeat(auto-fit,minmax(100px,1fr))}
+ dialog{padding:20px;width:calc(100vw - 24px);max-width:850px;max-height:calc(100dvh - 24px)}
+ #modal:has(.note-reader),#modal:has(.note-editor){width:calc(100vw - 24px)}
+ input,select,textarea{font-size:16px}
+ .timer{font-size:clamp(36px,13vw,62px)}
+ .focus{padding:20px}
+ #smart-form .actions{bottom:-20px}
+}

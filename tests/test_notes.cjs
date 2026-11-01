@@ -1,0 +1,24 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const listeners={},nodes=new Map();
+function node(s){if(!nodes.has(s))nodes.set(s,{innerHTML:'',open:false,showModal(){this.open=true},close(){this.open=false},classList:{add(){},toggle(){}}});return nodes.get(s)}
+const ctx=vm.createContext({console,Date,structuredClone,crypto:require('node:crypto').webcrypto,document:{querySelector:node,addEventListener(type,cb){(listeners[type]??=[]).push(cb)}},setInterval(){},setTimeout(){},clearTimeout(){},URL,Blob});
+for(const f of ['app','features','hifz','wellbeing','recordings','consolidated','transfer','academy','notes'])vm.runInContext(fs.readFileSync('static/'+f+'.js','utf8'),ctx);
+const run=s=>vm.runInContext(s,ctx);
+run(`data=normalizeClient({notes:[{id:'a',title:'IZINHUKUM',folder:' Bisnis ',tags:'klien, followup, klien',body:'Daftar pekerjaan'}, {id:'b',title:'TPA',folder:'TPA',tags:'klien, belajar',body:'[[IZINHUKUM]]'}, {id:'c',title:'<img src=x onerror=1>',folder:'',tags:'<tag>',body:'<script>alert(1)</script>'+'panjang '.repeat(100)}]}); page='Notes';`);
+const original=run('JSON.stringify(data.notes)');
+assert.equal(run('noteTags(data.notes[0]).length'),2);
+assert.equal(run('notesChoices().folders.length'),2);
+assert.equal(run('notesVisible().length'),3);
+run("notesFolder='Bisnis';notesTag='klien'");assert.equal(run('notesVisible()[0].id'),'a');
+run("query='tidak ada'");assert.equal(run('notesVisible().length'),0);
+run("query='';notesFolder=':none:';notesTag=''");assert.equal(run('notesVisible()[0].id'),'c');
+run("notesFolder='';notesTag='klien'");assert.equal(run('notesVisible().length'),2);
+assert.equal(run('JSON.stringify(data.notes)'),original,'Filtering must not mutate records');
+run("notesTag=''");const html=run('content()');assert.ok(html.includes('notes-folder'));assert.ok(html.includes('notes-tag'));assert.ok(!html.includes('<img'));assert.ok(!html.includes('<script>'));assert.ok(!html.includes('class="note-body"'));assert.ok(run('notePreview(data.notes[2]).length')<=261);
+run("readNote('c')");assert.ok(node('#modal').innerHTML.includes('&lt;img'));assert.ok(!node('#modal').innerHTML.includes('<script>'));assert.ok(node('#modal').innerHTML.includes('panjang '.repeat(90)),'Full reading must preserve long text');
+run("readNote('a')");assert.ok(node('#modal').innerHTML.includes('data-id="b"'),'Backlink should open related note');
+run('render=()=>{}');
+(async()=>{await run("consolidatedAction('notes-reset','')");assert.equal(run('notesFolder+notesTag+query'),'');
+listeners.change.at(-1)({target:{id:'notes-folder',value:'TPA'}});assert.equal(run('notesVisible()[0].id'),'b');
+console.log('Notes passed: combined folder/tag/search, empty folder, reset, no mutations, full reading, backlinks and escaping.');
+})().catch(e=>{console.error(e);process.exitCode=1});
